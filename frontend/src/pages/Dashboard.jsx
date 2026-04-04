@@ -64,7 +64,7 @@ export default function Dashboard() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:8001/api/v1/signals/latest?limit=20')
+        const res = await fetch(`${API}/signals/latest?limit=20`)
         const data = await res.json()
         if (data?.signals?.length) setSignals(data.signals)
       } catch {}
