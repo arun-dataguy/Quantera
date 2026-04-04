@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pricing — Quantera AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb955",
+                        "inverse-on-surface": "#eef0ff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0054d6",
+                        "background": "#faf8ff",
+                        "secondary-fixed": "#6dfcb7",
+                        "on-primary-container": "#f8f7ff",
+                        "surface-bright": "#faf8ff",
+                        "surface-container": "#ebedff",
+                        "surface": "#faf8ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dae1ff",
+                        "on-background": "#161b2b",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#6dfcb7",
+                        "primary": "#0050cb",
+                        "on-surface-variant": "#424656",
+                        "on-surface": "#161b2b",
+                        "surface-container-highest": "#dee1f7",
+                        "secondary-fixed-dim": "#4cdf9d",
+                        "tertiary-fixed": "#ffddb4",
+                        "on-tertiary-container": "#fff6ef",
+                        "on-secondary-fixed": "#002112",
+                        "surface-dim": "#d5d9ef",
+                        "on-primary-fixed": "#001849",
+                        "secondary": "#006c46",
+                        "primary-container": "#0066ff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "on-secondary-container": "#00734b",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#dee1f7",
+                        "surface-container-high": "#e3e7fd",
+                        "tertiary-container": "#9d6600",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727687",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f2f3ff",
+                        "on-tertiary-fixed": "#291800",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "tertiary": "#7c5000",
+                        "on-secondary-fixed-variant": "#005234",
+                        "inverse-primary": "#b3c5ff",
+                        "inverse-surface": "#2b3040",
+                        "outline-variant": "#c2c6d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf8ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(20px); background: rgba(250, 248, 255, 0.8); }
+    </style>
+</head>
+<body class="text-on-background bg-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf8ff] dark:bg-[#161b2b] shadow-[0_32px_64px_rgba(0,84,214,0.05)] flex justify-between items-center px-8 h-16 max-w-full mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#161b2b] dark:text-[#faf8ff]">Quantera</span>
+<div class="hidden md:flex items-center space-x-6 font-['Inter'] font-medium text-sm tracking-tight">
+<a class="text-[#424656] dark:text-[#aab0c0] hover:text-[#161b2b] transition-all duration-300" href="#">Dashboard</a>
+<a class="text-[#424656] dark:text-[#aab0c0] hover:text-[#161b2b] transition-all duration-300" href="#">Crypto</a>
+<a class="text-[#0050cb] dark:text-[#0066ff] font-semibold border-b-2 border-[#0050cb]" href="#">Pricing</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#424656] font-['Inter'] font-medium text-sm hover:bg-[#f2f3ff] px-4 py-2 rounded-lg transition-all">Login</button>
+<button class="bg-primary text-on-primary px-5 py-2 rounded-lg font-['Inter'] font-medium text-sm hover:translate-y-[-1px] transition-all shadow-lg shadow-primary/10">Get Started</button>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-6 md:px-12">
+<!-- Hero Section -->
+<div class="max-w-4xl mx-auto text-center mb-20">
+<h1 class="text-5xl md:text-6xl font-black tracking-tight text-on-surface mb-6 leading-tight">
+                Simple, transparent pricing
+            </h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Unlock professional-grade AI trading signals and market intelligence. No hidden fees. No complexity.
+            </p>
+</div>
+<!-- Pricing Bento/Grid Layout -->
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+<!-- Free Tier -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col h-full hover:translate-y-[-4px] transition-transform duration-300">
+<div class="mb-8">
+<h3 class="text-on-surface-variant font-semibold tracking-wider text-xs uppercase mb-2">FREE</h3>
+<div class="flex items-baseline">
+<span class="text-4xl font-bold text-on-surface">$0</span>
+<span class="text-on-surface-variant ml-2">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">5 signals per day</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">Basic signal only</span>
+</li>
+<li class="flex items-start gap-3 opacity-30">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">cancel</span>
+<span class="text-on-surface-variant text-sm">No confidence scores</span>
+</li>
+</ul>
+<button class="w-full py-3 bg-surface-container-high text-on-surface font-semibold rounded-lg hover:bg-surface-container-highest transition-colors">
+                    Start for free
+                </button>
+</div>
+<!-- Pro Tier (Featured) -->
+<div class="relative bg-surface-container-lowest p-8 rounded-xl flex flex-col h-full border-2 border-primary shadow-[0_32px_64px_rgba(0,84,214,0.12)] z-10 scale-105 transform">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[10px] font-bold px-3 py-1 rounded-[6px] tracking-widest uppercase">
+                    MOST POPULAR
+                </div>
+<div class="mb-8">
+<h3 class="text-primary font-bold tracking-wider text-xs uppercase mb-2">PRO</h3>
+<div class="flex items-baseline">
+<span class="text-4xl font-bold text-on-surface">$9.99</span>
+<span class="text-on-surface-variant ml-2">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<span class="text-on-surface font-medium text-sm">Unlimited signals</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<span class="text-on-surface font-medium text-sm">AI confidence scores</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<span class="text-on-surface font-medium text-sm">Market sentiment analysis</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+<span class="text-on-surface font-medium text-sm">Daily market digest</span>
+</li>
+</ul>
+<button class="w-full py-4 bg-primary text-on-primary font-bold rounded-lg shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
+                    Upgrade to Pro
+                </button>
+</div>
+<!-- Premium Tier -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col h-full hover:translate-y-[-4px] transition-transform duration-300">
+<div class="mb-8">
+<h3 class="text-on-surface-variant font-semibold tracking-wider text-xs uppercase mb-2">PREMIUM</h3>
+<div class="flex items-baseline">
+<span class="text-4xl font-bold text-on-surface">$29.99</span>
+<span class="text-on-surface-variant ml-2">/month</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">Everything in Pro</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">Full Crypto signals</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">Advanced API access</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">check_circle</span>
+<span class="text-on-surface-variant text-sm">Priority Support</span>
+</li>
+</ul>
+<button class="w-full py-3 bg-surface-container-high text-on-surface font-semibold rounded-lg hover:bg-surface-container-highest transition-colors">
+                    Go Premium
+                </button>
+</div>
+</div>
+<!-- Secondary Visual Section -->
+<div class="max-w-7xl mx-auto mt-32 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<div class="space-y-6">
+<h2 class="text-3xl font-bold tracking-tight text-on-surface">Designed for high-velocity decisions.</h2>
+<p class="text-on-surface-variant leading-relaxed">
+                    Our pricing is built to grow with your trading journey. Whether you're just starting to explore AI-driven markets or you're a professional scaling through our API, we have a tier designed for your precision.
+                </p>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+<div class="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">security</span>
+</div>
+<div>
+<p class="text-sm font-bold">Secure Transactions</p>
+<p class="text-xs text-on-surface-variant">Encrypted via Stripe &amp; Braintree</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative rounded-2xl overflow-hidden shadow-2xl">
+<img alt="Trading Interface" class="w-full h-80 object-cover" data-alt="Modern high-tech trading terminal with glowing neon blue data charts and minimalist interface design on a dark glass surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAECGPDQGgOZHTEqghIZE7BZVzViSSQBm89v8pGapcP_ZBbyhl2uWcQDWkLjgTcVKZoP366WEf0NbO8sgU9zQyx9wL9dmSuwLXAUcuZPoJAIQQcqZT3DUhyzpTAGP3_FPtoxaRo8VUn4vsXVJX9_a6_0Tk8lxnu3uDd9YPDXv8OcFTeGEQrEa39qsiZCBO0pDCqWNSYk2qU2u3492elYaK8B1DHeERqNBLlBF4HfmY1j0XvGhBPEobe6rom03D-fIXd2BzNLMn3fDE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
+</div>
+</div>
+<!-- Disclaimer -->
+<div class="max-w-4xl mx-auto mt-32 text-center">
+<p class="text-[11px] text-on-surface-variant uppercase tracking-widest font-bold mb-4">LEGAL DISCLAIMER</p>
+<p class="text-xs text-on-surface-variant leading-relaxed opacity-60">
+                Trading stocks and cryptocurrencies involves significant risk and can result in the loss of your invested capital. Quantera AI provides data and signals for informational purposes only. Past performance is not indicative of future results. None of the information provided should be considered financial or investment advice. Always consult with a certified financial professional before making trading decisions.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f2f3ff] dark:bg-[#161b2b] w-full py-12 px-8">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-2">
+<span class="text-sm font-bold text-[#161b2b] dark:text-white">Quantera AI</span>
+<p class="font-['Inter'] text-xs leading-relaxed text-[#424656] dark:text-gray-400">© 2024 Quantera AI. Editorial Precision in Trading.</p>
+</div>
+<div class="flex gap-8 font-['Inter'] text-xs">
+<a class="text-[#424656] hover:underline decoration-2 transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#424656] hover:underline decoration-2 transition-colors" href="#">Terms of Service</a>
+<a class="text-[#424656] hover:underline decoration-2 transition-colors" href="#">API Docs</a>
+<a class="text-[#424656] hover:underline decoration-2 transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

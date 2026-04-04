@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quantera — AI-Driven Trading Signals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffb955",
+                    "inverse-on-surface": "#eef0ff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#0054d6",
+                    "background": "#faf8ff",
+                    "secondary-fixed": "#6dfcb7",
+                    "on-primary-container": "#f8f7ff",
+                    "surface-bright": "#faf8ff",
+                    "surface-container": "#ebedff",
+                    "surface": "#faf8ff",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#dae1ff",
+                    "on-background": "#161b2b",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#6dfcb7",
+                    "primary": "#0050cb",
+                    "on-surface-variant": "#424656",
+                    "on-surface": "#161b2b",
+                    "surface-container-highest": "#dee1f7",
+                    "secondary-fixed-dim": "#4cdf9d",
+                    "tertiary-fixed": "#ffddb4",
+                    "on-tertiary-container": "#fff6ef",
+                    "on-secondary-fixed": "#002112",
+                    "surface-dim": "#d5d9ef",
+                    "on-primary-fixed": "#001849",
+                    "secondary": "#006c46",
+                    "primary-container": "#0066ff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#003fa4",
+                    "on-secondary-container": "#00734b",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#dee1f7",
+                    "surface-container-high": "#e3e7fd",
+                    "tertiary-container": "#9d6600",
+                    "on-secondary": "#ffffff",
+                    "outline": "#727687",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f3ff",
+                    "on-tertiary-fixed": "#291800",
+                    "on-tertiary-fixed-variant": "#633f00",
+                    "tertiary": "#7c5000",
+                    "on-secondary-fixed-variant": "#005234",
+                    "inverse-primary": "#b3c5ff",
+                    "inverse-surface": "#2b3040",
+                    "outline-variant": "#c2c6d8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "8px",
+                    "lg": "12px",
+                    "xl": "16px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ticker-scroll {
+            display: flex;
+            width: fit-content;
+            animation: scroll 30s linear infinite;
+        }
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-[#faf8ff] dark:bg-[#161b2b] shadow-[0_32px_64px_rgba(0,84,214,0.05)] h-16 flex justify-between items-center px-8 max-w-full mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#161b2b] dark:text-[#faf8ff]">Quantera</span>
+<div class="hidden md:flex items-center space-y-0 space-x-6 font-['Inter'] font-medium text-sm tracking-tight">
+<a class="text-[#424656] dark:text-[#aab0c0] hover:text-[#161b2b] transition-all duration-300" href="#">Dashboard</a>
+<a class="text-[#424656] dark:text-[#aab0c0] hover:text-[#161b2b] transition-all duration-300" href="#">Crypto</a>
+<a class="text-[#424656] dark:text-[#aab0c0] hover:text-[#161b2b] transition-all duration-300" href="#">Pricing</a>
+</div>
+</div>
+<div class="flex items-center gap-4 font-['Inter'] font-medium text-sm tracking-tight">
+<button class="px-4 py-2 text-[#424656] dark:text-[#aab0c0] hover:bg-[#f2f3ff] transition-all duration-300 rounded-lg">Login</button>
+<button class="px-5 py-2 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg shadow-[0_4px_12px_rgba(0,84,214,0.15)] hover:scale-95 duration-200 ease-out">Get Started</button>
+</div>
+</nav>
+<!-- Stock Ticker Strip -->
+<div class="mt-16 w-full bg-[#161b2b] py-3 overflow-hidden border-b border-white/5">
+<div class="ticker-scroll flex items-center space-x-12 px-4">
+<div class="flex items-center space-x-8">
+<div class="flex items-center gap-2"><span class="font-bold text-white">AAPL</span><span class="text-secondary text-sm">+1.24%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">TSLA</span><span class="text-error text-sm">-0.82%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">BTC</span><span class="text-secondary text-sm">+3.41%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">ETH</span><span class="text-secondary text-sm">+2.15%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">NVDA</span><span class="text-secondary text-sm">+4.88%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">MSFT</span><span class="text-error text-sm">-0.12%</span></div>
+</div>
+<!-- Duplicate for infinite loop -->
+<div class="flex items-center space-x-8">
+<div class="flex items-center gap-2"><span class="font-bold text-white">AAPL</span><span class="text-secondary text-sm">+1.24%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">TSLA</span><span class="text-error text-sm">-0.82%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">BTC</span><span class="text-secondary text-sm">+3.41%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">ETH</span><span class="text-secondary text-sm">+2.15%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">NVDA</span><span class="text-secondary text-sm">+4.88%</span></div>
+<div class="flex items-center gap-2"><span class="font-bold text-white">MSFT</span><span class="text-error text-sm">-0.12%</span></div>
+</div>
+</div>
+</div>
+<main class="max-w-7xl mx-auto px-8 pt-20 pb-32">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<!-- Hero Text Content -->
+<div class="lg:w-1/2 flex flex-col space-y-8">
+<div class="inline-flex items-center px-3 py-1 rounded-[6px] bg-primary-fixed text-on-primary-fixed-variant text-xs font-bold tracking-wider w-fit">
+                    NEW: AI v2.0
+                </div>
+<h1 class="text-5xl md:text-7xl font-black text-on-surface tracking-tight leading-[1.1] font-headline">
+                    Data-driven trading <span class="text-primary">signals</span> for everyone
+                </h1>
+<p class="text-lg text-on-surface-variant leading-relaxed max-w-xl">
+                    Empowering traders with real-time confidence scores and sentiment analysis. Our neural networks process millions of data points to deliver clarity in high-volatility markets.
+                </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-lg hover:shadow-[0_20px_40px_rgba(0,84,214,0.2)] transition-all">Start free</button>
+<button class="px-8 py-4 bg-surface-container-high text-primary font-bold rounded-lg hover:bg-surface-container-highest transition-all flex items-center gap-2">
+                        See how it works
+                        <span class="material-symbols-outlined text-sm">play_circle</span>
+</button>
+</div>
+<div class="pt-12 flex flex-col space-y-4">
+<span class="text-xs font-bold text-outline uppercase tracking-widest">As seen on</span>
+<div class="flex items-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+<span class="font-black text-xl italic">Forbes</span>
+<span class="font-black text-xl">TechCrunch</span>
+<span class="font-black text-xl">Wired</span>
+</div>
+</div>
+</div>
+<!-- Floating Dashboard Mockup -->
+<div class="lg:w-1/2 relative">
+<div class="absolute -inset-4 bg-primary/5 blur-3xl rounded-full"></div>
+<div class="relative bg-surface-container-lowest p-6 rounded-xl shadow-[0_32px_64px_rgba(0,84,214,0.08)] border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="font-bold text-on-surface">Live Signals</h3>
+<p class="text-xs text-on-surface-variant">Real-time AI monitoring</p>
+</div>
+<div class="flex gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-tighter">Market Open</span>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Signal Card 1 -->
+<div class="p-4 bg-surface-container-low rounded-lg flex items-center justify-between group hover:translate-x-1 transition-transform">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-primary">AAPL</div>
+<div>
+<div class="text-sm font-bold">Apple Inc.</div>
+<div class="text-[10px] text-on-surface-variant">3m ago • Technical + Sentiment</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<div class="text-[10px] text-outline font-bold uppercase tracking-tighter">Confidence</div>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-secondary w-[85%]"></div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-[6px] bg-secondary/10 text-secondary text-xs font-bold">BUY</span>
+</div>
+</div>
+<!-- Signal Card 2 -->
+<div class="p-4 bg-surface-container-low rounded-lg flex items-center justify-between group hover:translate-x-1 transition-transform">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-primary">TSLA</div>
+<div>
+<div class="text-sm font-bold">Tesla Inc.</div>
+<div class="text-[10px] text-on-surface-variant">12m ago • Macro Trend</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<div class="text-[10px] text-outline font-bold uppercase tracking-tighter">Confidence</div>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-on-surface-variant w-[40%]"></div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-[6px] bg-on-surface-variant/10 text-on-surface-variant text-xs font-bold">HOLD</span>
+</div>
+</div>
+<!-- Signal Card 3 -->
+<div class="p-4 bg-surface-container-low rounded-lg flex items-center justify-between group hover:translate-x-1 transition-transform">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-primary">BTC</div>
+<div>
+<div class="text-sm font-bold">Bitcoin</div>
+<div class="text-[10px] text-on-surface-variant">1m ago • Volume Spike</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right">
+<div class="text-[10px] text-outline font-bold uppercase tracking-tighter">Confidence</div>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-secondary w-[94%]"></div>
+</div>
+</div>
+<span class="px-3 py-1 rounded-[6px] bg-secondary/10 text-secondary text-xs font-bold">BUY</span>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/10 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-primary-fixed flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-secondary-fixed flex items-center justify-center text-[10px] font-bold">AL</div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-tertiary-fixed flex items-center justify-center text-[10px] font-bold">+12</div>
+</div>
+<span class="text-[10px] font-medium text-on-surface-variant">Joined by 12,400+ pro traders today</span>
+</div>
+</div>
+<!-- Floating Glass Card -->
+<div class="absolute -bottom-10 -left-10 glass-panel p-6 rounded-xl border border-white/40 shadow-2xl hidden md:block">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white">trending_up</span>
+</div>
+<div>
+<div class="text-2xl font-black text-on-surface">+24.3%</div>
+<div class="text-[10px] font-bold text-secondary uppercase">Average Weekly Yield</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Metrics Bento Grid Section -->
+<div class="mt-40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="p-8 bg-surface-container-low rounded-xl border-l-4 border-primary group hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary mb-4 block" style="font-size: 32px;">verified</span>
+<div class="text-4xl font-black text-on-surface mb-2">73%</div>
+<div class="text-sm font-bold text-on-surface">Signal Accuracy</div>
+<p class="text-xs text-on-surface-variant mt-2">Verified historical performance across all asset classes.</p>
+</div>
+<div class="p-8 bg-surface-container-low rounded-xl group hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary mb-4 block" style="font-size: 32px;">data_exploration</span>
+<div class="text-4xl font-black text-on-surface mb-2">40+</div>
+<div class="text-sm font-bold text-on-surface">Indicators</div>
+<p class="text-xs text-on-surface-variant mt-2">Aggregated technical and social sentiment markers.</p>
+</div>
+<div class="p-8 bg-surface-container-low rounded-xl group hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary mb-4 block" style="font-size: 32px;">language</span>
+<div class="text-4xl font-black text-on-surface mb-2">3</div>
+<div class="text-sm font-bold text-on-surface">Markets</div>
+<p class="text-xs text-on-surface-variant mt-2">Specialized algorithms for Crypto, Forex, and Equities.</p>
+</div>
+<div class="p-8 bg-surface-container-low rounded-xl group hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-primary mb-4 block" style="font-size: 32px;">update</span>
+<div class="text-4xl font-black text-on-surface mb-2">30min</div>
+<div class="text-sm font-bold text-on-surface">Refresh Rate</div>
+<p class="text-xs text-on-surface-variant mt-2">Low-latency data processing for high-frequency insights.</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f2f3ff] dark:bg-[#161b2b] w-full py-12 px-8">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+<div class="flex flex-col gap-2">
+<span class="text-sm font-bold text-[#161b2b]">Quantera AI</span>
+<p class="font-['Inter'] text-xs leading-relaxed text-[#424656]">© 2024 Quantera AI. Editorial Precision in Trading.</p>
+</div>
+<div class="flex flex-wrap gap-8 font-['Inter'] text-xs leading-relaxed">
+<a class="text-[#424656] hover:text-[#0050cb] hover:underline decoration-2 transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#424656] hover:text-[#0050cb] hover:underline decoration-2 transition-colors" href="#">Terms of Service</a>
+<a class="text-[#424656] hover:text-[#0050cb] hover:underline decoration-2 transition-colors" href="#">API Docs</a>
+<a class="text-[#424656] hover:text-[#0050cb] hover:underline decoration-2 transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>
