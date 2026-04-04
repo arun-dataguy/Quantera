@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quantera — Data-driven trading signals for everyone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:     #0066FF;
+    --blue-lt:  #E8F1FF;
+    --blue-mid: #3385FF;
+    --navy:     #001A4D;
+    --text:     #0A0F1E;
+    --sub:      #5A6478;
+    --border:   #E4E8F0;
+    --white:    #FFFFFF;
+    --bg:       #F7F9FC;
+    --green:    #00B87A;
+    --red:      #F23645;
+    --amber:    #F5A623;
+    --sans:     'DM Sans', sans-serif;
+    --serif:    'Instrument Serif', serif;
+    --radius:   12px;
+    --shadow:   0 4px 24px rgba(0,102,255,0.08);
+    --shadow-lg:0 12px 48px rgba(0,102,255,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--text); background: var(--white); line-height: 1.6; overflow-x: hidden; }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6vw; height: 68px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--blue); display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-mark svg { width: 18px; height: 18px; }
+  .nav-logo-text { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.02em; }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-ctas { display: flex; align-items: center; gap: 12px; }
+  .btn-ghost { padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-primary { padding: 8px 20px; border-radius: 8px; border: none; background: var(--blue); font-family: var(--sans); font-size: 14px; font-weight: 600; color: white; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-primary:hover { background: var(--blue-mid); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 140px 6vw 100px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    max-width: 1280px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 20px;
+    background: var(--blue-lt); color: var(--blue);
+    font-size: 13px; font-weight: 500; margin-bottom: 28px;
+  }
+  .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+  .hero h1 {
+    font-size: clamp(40px, 4.5vw, 60px);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .hero h1 em { font-family: var(--serif); font-style: italic; color: var(--blue); font-weight: 400; }
+  .hero p { font-size: 17px; color: var(--sub); line-height: 1.7; margin-bottom: 40px; max-width: 480px; }
+  .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .btn-hero { padding: 14px 28px; border-radius: 10px; border: none; background: var(--blue); font-family: var(--sans); font-size: 15px; font-weight: 600; color: white; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-hero:hover { background: var(--blue-mid); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,102,255,0.35); }
+  .btn-hero-ghost { padding: 14px 28px; border-radius: 10px; border: 1.5px solid var(--border); background: transparent; font-family: var(--sans); font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-hero-ghost:hover { border-color: var(--blue); color: var(--blue); }
+  .hero-trust { margin-top: 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .trust-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--sub); }
+  .trust-item svg { color: var(--green); }
+
+  /* ── Dashboard mockup ── */
+  .hero-visual { position: relative; }
+  .dashboard-card {
+    background: white; border-radius: 16px; border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); overflow: hidden;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .dash-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .dash-header-left { display: flex; align-items: center; gap: 10px; }
+  .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dash-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .live-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--green); background: rgba(0,184,122,0.1); padding: 3px 10px; border-radius: 20px; }
+  .live-badge span { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+  .dash-body { padding: 16px 18px; }
+  .signal-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border-radius: 8px; margin-bottom: 6px;
+    border: 1px solid var(--border); transition: all 0.2s;
+  }
+  .signal-row:hover { border-color: var(--blue); background: var(--blue-lt); }
+  .signal-sym { font-size: 13px; font-weight: 600; color: var(--text); width: 52px; }
+  .signal-price { font-size: 12px; color: var(--sub); width: 68px; }
+  .conf-wrap { flex: 1; margin: 0 12px; }
+  .conf-bar-bg { height: 4px; background: var(--border); border-radius: 2px; }
+  .conf-bar-fill { height: 4px; border-radius: 2px; transition: width 1s ease; }
+  .conf-val { font-size: 11px; color: var(--sub); margin-top: 3px; }
+  .sig-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.04em; }
+  .sig-buy  { background: rgba(0,184,122,0.12); color: var(--green); }
+  .sig-hold { background: rgba(245,166,35,0.12); color: var(--amber); }
+  .sig-sell { background: rgba(242,54,69,0.12); color: var(--red); }
+  .dash-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .dash-stat { text-align: center; }
+  .dash-stat-val { font-size: 15px; font-weight: 600; color: var(--text); }
+  .dash-stat-val.pos { color: var(--green); }
+  .dash-stat-label { font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.06em; }
+  .floating-card {
+    position: absolute; bottom: -20px; left: -30px;
+    background: white; border-radius: 12px; border: 1px solid var(--border);
+    box-shadow: var(--shadow); padding: 12px 16px;
+    animation: float2 5s ease-in-out infinite 1s;
+    min-width: 180px;
+  }
+  @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .floating-card-label { font-size: 11px; color: var(--sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .floating-val { font-size: 22px; font-weight: 600; color: var(--green); }
+  .floating-sub { font-size: 12px; color: var(--sub); }
+
+  /* ── Ticker strip ── */
+  .ticker-strip { background: var(--navy); padding: 12px 0; overflow: hidden; }
+  .ticker-track { display: flex; gap: 0; animation: ticker 30s linear infinite; }
+  .ticker-item { display: flex; align-items: center; gap: 8px; padding: 0 32px; white-space: nowrap; font-size: 13px; font-weight: 500; border-right: 1px solid rgba(255,255,255,0.1); }
+  .ticker-sym { color: white; }
+  .ticker-price { color: rgba(255,255,255,0.6); }
+  .ticker-chg.up { color: #00E676; }
+  .ticker-chg.dn { color: #FF4D6D; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* ── Stats ── */
+  .stats-section { padding: 80px 6vw; background: var(--bg); }
+  .stats-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .stat-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 28px 24px; text-align: center; transition: all 0.2s; }
+  .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .stat-num { font-size: 40px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
+  .stat-num span { font-size: 24px; color: var(--blue); }
+  .stat-label { font-size: 14px; color: var(--sub); margin-top: 8px; }
+
+  /* ── Features ── */
+  .features-section { padding: 100px 6vw; max-width: 1280px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px; }
+  .section-title { font-size: clamp(28px, 3.5vw, 44px); font-weight: 300; letter-spacing: -0.025em; color: var(--text); line-height: 1.2; margin-bottom: 16px; }
+  .section-title em { font-family: var(--serif); font-style: italic; color: var(--blue); }
+  .section-sub { font-size: 17px; color: var(--sub); max-width: 520px; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .feature-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 32px 28px; transition: all 0.25s; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+  .feature-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+  .feature-card:hover::before { transform: scaleX(1); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--blue-lt); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .feature-icon svg { width: 20px; height: 20px; color: var(--blue); }
+  .feature-card h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .feature-card p { font-size: 14px; color: var(--sub); line-height: 1.65; }
+
+  /* ── How it works ── */
+  .how-section { padding: 100px 6vw; background: var(--bg); }
+  .how-inner { max-width: 1280px; margin: 0 auto; }
+  .how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 60px; position: relative; }
+  .how-steps::before { content: ''; position: absolute; top: 28px; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(to right, var(--blue-lt), var(--blue), var(--blue-lt)); z-index: 0; }
+  .how-step { text-align: center; padding: 0 20px; position: relative; z-index: 1; }
+  .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--blue); color: white; font-size: 18px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+  .how-step h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .how-step p { font-size: 13px; color: var(--sub); line-height: 1.6; }
+
+  /* ── Pricing ── */
+  .pricing-section { padding: 100px 6vw; max-width: 1280px; margin: 0 auto; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .pricing-card { border-radius: 16px; border: 1px solid var(--border); padding: 36px 32px; position: relative; transition: all 0.25s; background: white; }
+  .pricing-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+  .pricing-card.featured { border-color: var(--blue); border-width: 2px; }
+  .popular-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--blue); color: white; font-size: 12px; font-weight: 600; padding: 4px 18px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.04em; }
+  .plan-name { font-size: 13px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .plan-price { font-size: 44px; font-weight: 300; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
+  .plan-price sup { font-size: 20px; vertical-align: super; }
+  .plan-price span { font-size: 16px; color: var(--sub); font-weight: 400; }
+  .plan-desc { font-size: 14px; color: var(--sub); margin: 12px 0 28px; line-height: 1.6; }
+  .plan-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+  .plan-features { list-style: none; margin-bottom: 32px; }
+  .plan-features li { font-size: 14px; color: var(--text); padding: 7px 0; display: flex; align-items: center; gap: 10px; }
+  .plan-features li::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,184,122,0.15); flex-shrink: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2300B87A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
+  .plan-features li.no::before { background: rgba(90,100,120,0.1); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235A6478' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; color: var(--sub); }
+  .btn-plan { width: 100%; padding: 13px; border-radius: 10px; font-family: var(--sans); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1.5px solid var(--border); background: transparent; color: var(--text); }
+  .btn-plan:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-plan.featured { background: var(--blue); border-color: var(--blue); color: white; }
+  .btn-plan.featured:hover { background: var(--blue-mid); box-shadow: 0 4px 16px rgba(0,102,255,0.3); }
+
+  /* ── Disclaimer ── */
+  .disclaimer { background: #FFFBF0; border-top: 1px solid #FFE4A0; padding: 16px 6vw; }
+  .disclaimer p { max-width: 1280px; margin: 0 auto; font-size: 12px; color: #8A7040; line-height: 1.6; }
+
+  /* ── Footer ── */
+  footer { background: var(--navy); padding: 60px 6vw 32px; }
+  .footer-inner { max-width: 1280px; margin: 0 auto; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 12px; line-height: 1.7; max-width: 280px; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .footer-logo-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
+  .footer-logo-text { font-size: 17px; font-weight: 600; color: white; }
+  .footer-col h4 { font-size: 13px; font-weight: 600; color: white; margin-bottom: 16px; letter-spacing: 0.05em; }
+  .footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+  .footer-col a:hover { color: white; }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; }
+  .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+  /* ── Animations ── */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+    .how-steps { grid-template-columns: repeat(2,1fr); }
+    .how-steps::before { display: none; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">Quantera</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-ctas">
+    <a href="#" class="btn-ghost">Log in</a>
+    <a href="#pricing" class="btn-primary">Get started free</a>
+  </div>
+</nav>
+
+<!-- Ticker -->
+<div class="ticker-strip" style="margin-top:68px;">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="ticker-sym">AAPL</span><span class="ticker-price">$255.92</span><span class="ticker-chg up">+1.24%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">NVDA</span><span class="ticker-price">$177.39</span><span class="ticker-chg up">+2.86%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">META</span><span class="ticker-price">$574.46</span><span class="ticker-chg dn">-0.93%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">MSFT</span><span class="ticker-price">$373.46</span><span class="ticker-chg up">+0.72%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">AMZN</span><span class="ticker-price">$209.77</span><span class="ticker-chg up">+1.55%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span><span class="ticker-price">$83,241</span><span class="ticker-chg dn">-2.14%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span><span class="ticker-price">$1,812</span><span class="ticker-chg dn">-1.87%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">TSLA</span><span class="ticker-price">$360.59</span><span class="ticker-chg up">+0.44%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">GOOGL</span><span class="ticker-price">$295.77</span><span class="ticker-chg dn">-0.31%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">JPM</span><span class="ticker-price">$294.60</span><span class="ticker-chg up">+0.88%</span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><span class="ticker-sym">AAPL</span><span class="ticker-price">$255.92</span><span class="ticker-chg up">+1.24%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">NVDA</span><span class="ticker-price">$177.39</span><span class="ticker-chg up">+2.86%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">META</span><span class="ticker-price">$574.46</span><span class="ticker-chg dn">-0.93%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">MSFT</span><span class="ticker-price">$373.46</span><span class="ticker-chg up">+0.72%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">AMZN</span><span class="ticker-price">$209.77</span><span class="ticker-chg up">+1.55%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span><span class="ticker-price">$83,241</span><span class="ticker-chg dn">-2.14%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span><span class="ticker-price">$1,812</span><span class="ticker-chg dn">-1.87%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">TSLA</span><span class="ticker-price">$360.59</span><span class="ticker-chg up">+0.44%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">GOOGL</span><span class="ticker-price">$295.77</span><span class="ticker-chg dn">-0.31%</span></div>
+    <div class="ticker-item"><span class="ticker-sym">JPM</span><span class="ticker-price">$294.60</span><span class="ticker-chg up">+0.88%</span></div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content fade-up">
+    <div class="hero-badge">
+      <span></span>
+      Live signals — US stocks, UK equities &amp; crypto
+    </div>
+    <h1>Data-driven trading signals <em>for everyone</em></h1>
+    <p>Quantera combines LSTM neural networks, technical analysis, and real-time news sentiment to generate institutional-grade BUY/HOLD/SELL signals — no quant degree required.</p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-hero">
+        Start free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#how" class="btn-hero-ghost">See how it works</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        No credit card required
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Cancel anytime
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00B87A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Not financial advice
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual fade-up" style="transition-delay:0.2s">
+    <div class="dashboard-card">
+      <div class="dash-header">
+        <div class="dash-header-left">
+          <div class="dash-dot" style="background:#FF5F57"></div>
+          <div class="dash-dot" style="background:#FEBC2E"></div>
+          <div class="dash-dot" style="background:#28C840"></div>
+          <span class="dash-title" style="margin-left:8px">Live Signals</span>
+        </div>
+        <div class="live-badge"><span></span> Live</div>
+      </div>
+      <div class="dash-body">
+        <div class="signal-row">
+          <span class="signal-sym">META</span>
+          <span class="signal-price">$574.46</span>
+          <div class="conf-wrap">
+            <div class="conf-bar-bg"><div class="conf-bar-fill" style="width:90%;background:#00B87A"></div></div>
+            <div class="conf-val">90.2% confidence</div>
+          </div>
+          <span class="sig-badge sig-buy">BUY</span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-sym">AAPL</span>
+          <span class="signal-price">$255.92</span>
+          <div class="conf-wrap">
+            <div class="conf-bar-bg"><div class="conf-bar-fill" style="width:71%;background:#00B87A"></div></div>
+            <div class="conf-val">71.0% confidence</div>
+          </div>
+          <span class="sig-badge sig-buy">BUY</span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-sym">NVDA</span>
+          <span class="signal-price">$177.39</span>
+          <div class="conf-wrap">
+            <div class="conf-bar-bg"><div class="conf-bar-fill" style="width:73%;background:#00B87A"></div></div>
+            <div class="conf-val">73.2% confidence</div>
+          </div>
+          <span class="sig-badge sig-buy">BUY</span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-sym">TSLA</span>
+          <span class="signal-price">$360.59</span>
+          <div class="conf-wrap">
+            <div class="conf-bar-bg"><div class="conf-bar-fill" style="width:52%;background:#F5A623"></div></div>
+            <div class="conf-val">52.0% confidence</div>
+          </div>
+          <span class="sig-badge sig-hold">HOLD</span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-sym">BTC</span>
+          <span class="signal-price">$83,241</span>
+          <div class="conf-wrap">
+            <div class="conf-bar-bg"><div class="conf-bar-fill" style="width:78%;background:#00B87A"></div></div>
+            <div class="conf-val">78.4% confidence</div>
+          </div>
+          <span class="sig-badge sig-buy">BUY</span>
+        </div>
+      </div>
+      <div class="dash-footer">
+        <div class="dash-stat"><div class="dash-stat-val pos">+13.6%</div><div class="dash-stat-label">30d return</div></div>
+        <div class="dash-stat"><div class="dash-stat-val">76.3%</div><div class="dash-stat-label">Avg conf.</div></div>
+        <div class="dash-stat"><div class="dash-stat-val">0.85</div><div class="dash-stat-label">Sharpe ratio</div></div>
+        <div class="dash-stat"><div class="dash-stat-val pos">222</div><div class="dash-stat-label">BUY signals</div></div>
+      </div>
+    </div>
+    <div class="floating-card">
+      <div class="floating-card-label">Today's P&L</div>
+      <div class="floating-val">+$1,360</div>
+      <div class="floating-sub">Paper trading · 2 positions</div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-card fade-up">
+      <div class="stat-num">73<span>%</span></div>
+      <div class="stat-label">Model accuracy on validation data</div>
+    </div>
+    <div class="stat-card fade-up" style="transition-delay:0.1s">
+      <div class="stat-num">40<span>+</span></div>
+      <div class="stat-label">Technical indicators per signal</div>
+    </div>
+    <div class="stat-card fade-up" style="transition-delay:0.2s">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Markets — US, UK equities &amp; crypto</div>
+    </div>
+    <div class="stat-card fade-up" style="transition-delay:0.3s">
+      <div class="stat-num">30<span>m</span></div>
+      <div class="stat-label">Signal refresh interval (live data)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features-section" id="features">
+  <div class="fade-up">
+    <div class="section-label">What you get</div>
+    <h2 class="section-title">Institutional-grade signals,<br><em>retail-friendly price</em></h2>
+    <p class="section-sub">Built on the same ML architecture used by quantitative hedge funds — available to everyone from $9.99/month.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>LSTM Neural Network</h3>
+      <p>Bidirectional LSTM with attention mechanism predicts 7-day price direction from 30-bar sequence patterns across 40+ engineered features.</p>
+    </div>
+    <div class="feature-card fade-up" style="transition-delay:0.1s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <h3>Technical Analysis</h3>
+      <p>RSI, MACD, Bollinger Bands, ATR, SMA/EMA crossovers, and 35 more indicators combined into a single composite score per signal.</p>
+    </div>
+    <div class="feature-card fade-up" style="transition-delay:0.2s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>Sentiment Analysis</h3>
+      <p>Real-time financial news scored via VADER NLP. Bullish news boosts confidence; bearish headlines trigger caution. Updated every hour.</p>
+    </div>
+    <div class="feature-card fade-up" style="transition-delay:0.1s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h3>LightGBM Ensemble</h3>
+      <p>Meta-model combines LSTM probability, technical score, and sentiment into a single confidence score. BUY only triggers above 68%.</p>
+    </div>
+    <div class="feature-card fade-up" style="transition-delay:0.2s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <h3>Multi-market Coverage</h3>
+      <p>US stocks (NYSE/NASDAQ), UK equities (LSE), and crypto (BTC, ETH, SOL, BNB). All markets in one dashboard, updated every 30 minutes.</p>
+    </div>
+    <div class="feature-card fade-up" style="transition-delay:0.3s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <h3>Backtested Strategy</h3>
+      <p>Every strategy is backtested on 2 years of historical data with real commission and slippage costs before being made available to users.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="fade-up">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">From raw data to <em>clear signal</em></h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step fade-up">
+        <div class="step-num">1</div>
+        <h4>Data ingestion</h4>
+        <p>Yahoo Finance + NewsAPI fetch live prices and financial news every 15 minutes for all covered symbols.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.1s">
+        <div class="step-num">2</div>
+        <h4>Feature engineering</h4>
+        <p>40+ technical indicators and sentiment scores are computed, normalised, and assembled into a feature matrix.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.2s">
+        <div class="step-num">3</div>
+        <h4>ML prediction</h4>
+        <p>LSTM predicts price direction. LightGBM combines all scores into a final confidence value between 0 and 100%.</p>
+      </div>
+      <div class="how-step fade-up" style="transition-delay:0.3s">
+        <div class="step-num">4</div>
+        <h4>Signal delivered</h4>
+        <p>BUY/HOLD/SELL signals land in your dashboard every 30 minutes. Premium users receive instant email alerts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing-section" id="pricing">
+  <div class="fade-up" style="text-align:center">
+    <div class="section-label" style="text-align:center">Pricing</div>
+    <h2 class="section-title">Start free. <em>Upgrade when ready.</em></h2>
+    <p class="section-sub" style="margin: 0 auto">No long-term contracts. Cancel any time. All plans include a 14-day free trial of Pro.</p>
+  </div>
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="pricing-card fade-up">
+      <div class="plan-name">Free</div>
+      <div class="plan-price"><sup>$</sup>0<span> / month</span></div>
+      <p class="plan-desc">Perfect for exploring Quantera and understanding how AI signals work.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>5 signals per day (delayed 1h)</li>
+        <li>US stocks only</li>
+        <li>Basic signal: BUY/HOLD/SELL</li>
+        <li>7-day signal history</li>
+        <li class="no">Confidence scores</li>
+        <li class="no">Sentiment analysis</li>
+        <li class="no">Email alerts</li>
+        <li class="no">Crypto signals</li>
+      </ul>
+      <button class="btn-plan">Get started free</button>
+    </div>
+    <!-- Pro -->
+    <div class="pricing-card featured fade-up" style="transition-delay:0.1s">
+      <div class="popular-badge">MOST POPULAR</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>$</sup>9<span>.99 / month</span></div>
+      <p class="plan-desc">For active traders who want the full signal with confidence scores and sentiment.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Unlimited live signals</li>
+        <li>US stocks + UK equities</li>
+        <li>Full confidence scores</li>
+        <li>LSTM + technical breakdown</li>
+        <li>Sentiment analysis</li>
+        <li>30-day signal history</li>
+        <li>Email alerts</li>
+        <li class="no">Crypto signals</li>
+      </ul>
+      <button class="btn-plan featured">Start Pro free trial</button>
+    </div>
+    <!-- Premium -->
+    <div class="pricing-card fade-up" style="transition-delay:0.2s">
+      <div class="plan-name">Premium</div>
+      <div class="plan-price"><sup>$</sup>29<span>.99 / month</span></div>
+      <p class="plan-desc">Everything in Pro plus crypto signals, priority updates, and API access.</p>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Everything in Pro</li>
+        <li>Crypto signals (BTC, ETH, SOL)</li>
+        <li>Instant real-time alerts</li>
+        <li>API access (REST)</li>
+        <li>Full signal history</li>
+        <li>Backtesting reports</li>
+        <li>Priority support</li>
+        <li>Early access to new features</li>
+      </ul>
+      <button class="btn-plan">Get Premium</button>
+    </div>
+  </div>
+</section>
+
+<!-- Disclaimer -->
+<div class="disclaimer">
+  <p>⚠ Quantera signals are for informational and educational purposes only. They do not constitute financial advice, investment advice, or any recommendation to buy or sell any security or cryptocurrency. Trading involves significant risk of loss. Past signal performance does not guarantee future results. Always do your own research before making any investment decision.</p>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <span class="footer-logo-text">Quantera</span>
+        </div>
+        <p>Data-driven trading signals for everyone. AI-powered, sentiment-aware, and built for retail investors.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">How it works</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Markets</h4>
+        <a href="#">US Stocks</a>
+        <a href="#">UK Equities</a>
+        <a href="#">Cryptocurrency</a>
+        <a href="#">Watchlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Quantera. All rights reserved. Not financial advice.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Fade-up on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Animate confidence bars on load
+  setTimeout(() => {
+    document.querySelectorAll('.conf-bar-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => bar.style.width = w, 100);
+    });
+  }, 500);
+</script>
+</body>
+</html>

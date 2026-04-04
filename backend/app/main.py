@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.config import settings
 from app.models.user import Base
 from app.routers import auth
+from app.routers import stripe_router
 
 engine = create_async_engine(
     settings.database_url,
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api")
+app.include_router(stripe_router.router, prefix="/api")
 
 
 @app.get("/health")
