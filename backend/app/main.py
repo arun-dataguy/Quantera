@@ -1,48 +1,52 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
-from app.config import settings
-from app.models.user import Base
-from app.routers import auth
-from app.routers import stripe_router
-
-engine = create_async_engine(
-    settings.database_url,
-    echo=settings.app_env == "development"
-)
-AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
-
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print("✅ Quantera API started — tables ready")
+    # Startup — don't crash if DB fails
+    try:
+        from app.database import engine, Base
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        print("✅ Database connected")
+    except Exception as e:
+        print(f"⚠️ Database warning: {e}")
     yield
-    await engine.dispose()
+    # Shutdown
+    try:
+        from app.database import engine
+        await engine.dispose()
+    except:
+        pass
 
+app = FastAPI(title="Quantera API", lifespan=lifespan)
 
-app = FastAPI(
-    title="Quantera API",
-    description="AI trading signal platform",
-    version="1.0.0",
-    lifespan=lifespan,
-)
+# CORS
+origins = ["http://localhost:5173", "http://localhost:3000"]
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api")
-app.include_router(stripe_router.router, prefix="/api")
-
-
+# Health check — must be first route
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "quantera"}
+    return {"status": "healthy", "service": "quantera-api"}
+
+# Routers
+from app.routers import auth, stripe_router
+app.include_router(auth.router,          prefix="/api/auth",   tags=["auth"])
+app.include_router(stripe_router.router, prefix="/api/stripe", tags=["stripe"])
+
+@app.get("/")
+async def root():
+    return {"message": "Quantera API", "docs": "/docs"}
