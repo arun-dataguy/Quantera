@@ -43,9 +43,10 @@ async def health():
     return {"status": "healthy", "service": "quantera-api"}
 
 # Routers
-from app.routers import auth, stripe_router
-app.include_router(auth.router,          prefix="/api/auth",   tags=["auth"])
-app.include_router(stripe_router.router, prefix="/api/stripe", tags=["stripe"])
+from app.routers import auth, stripe_router, signals
+app.include_router(auth.router,            prefix="/api/auth",    tags=["auth"])
+app.include_router(stripe_router.router,   prefix="/api/stripe",  tags=["stripe"])
+app.include_router(signals.router,         prefix="/api/signals", tags=["signals"])
 
 @app.get("/")
 async def root():

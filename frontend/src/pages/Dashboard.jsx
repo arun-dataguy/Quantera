@@ -54,7 +54,9 @@ export default function Dashboard() {
   const { user, logout, isPro, apiFetch } = useAuth()
   const navigate  = useNavigate()
   const isPremium = user?.plan === 'premium'
-  const [signals, setSignals]         = useState(MOCK)
+  const [signals, setSignals]         = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [stats, setStats]             = useState({ buy: 0, hold: 0, sell: 0, avgConf: 0 })
   const [selected, setSelected]       = useState('AAPL')
   const [upgrading, setUpgrading]     = useState(false)
   const [tab, setTab]                 = useState('signals') // 'signals' | 'chart' | 'crypto'
@@ -62,16 +64,29 @@ export default function Dashboard() {
   const [cryptoSignals, setCryptoSignals] = useState(CRYPTO_MOCK)
 
   useEffect(() => {
-    const load = async () => {
+    const fetchSignals = async () => {
+      setLoading(true)
       try {
-        const res = await fetch(`${API}/signals/latest?limit=20`)
-        const data = await res.json()
-        if (data?.signals?.length) setSignals(data.signals)
-      } catch {}
+        const data = await apiFetch('/signals/latest?market=stocks')
+        setSignals(data.signals || [])
+        setStats({
+          buy:  data.signals.filter(s => s.signal === 'BUY').length,
+          hold: data.signals.filter(s => s.signal === 'HOLD').length,
+          sell: data.signals.filter(s => s.signal === 'SELL').length,
+          avgConf: data.signals.length
+            ? (data.signals.reduce((a, s) => a + s.confidence, 0) / data.signals.length * 100).toFixed(1)
+            : 0,
+        })
+      } catch (err) {
+        console.error('Signal fetch failed:', err)
+      } finally {
+        setLoading(false)
+      }
     }
-    load()
-    const t = setInterval(load, 30000)
-    return () => clearInterval(t)
+
+    fetchSignals()
+    const interval = setInterval(fetchSignals, 30 * 60 * 1000) // refresh every 30 mins
+    return () => clearInterval(interval)
   }, [])
 
   const handleUpgrade = async (plan) => {
@@ -85,9 +100,6 @@ export default function Dashboard() {
 
   const visible  = isPro ? signals : signals.slice(0, 5)
   const selected_sig = signals.find(s => s.symbol === selected)
-  const buyCount  = signals.filter(s => s.signal === 'BUY').length
-  const holdCount = signals.filter(s => s.signal === 'HOLD').length
-  const avgConf   = signals.length ? (signals.reduce((a, b) => a + b.confidence, 0) / signals.length * 100).toFixed(1) : 0
 
   return (
     <div style={s.page}>
@@ -129,22 +141,22 @@ export default function Dashboard() {
       {/* ── Stats bar ── */}
       <div style={s.statsBar}>
         <div style={s.stat}>
-          <span style={{ ...s.statNum, color: '#00B87A' }}>{buyCount}</span>
+          <span style={{ ...s.statNum, color: '#00B87A' }}>{stats.buy}</span>
           <span style={s.statLabel}>BUY</span>
         </div>
         <div style={s.statDivider}/>
         <div style={s.stat}>
-          <span style={{ ...s.statNum, color: '#F5A623' }}>{holdCount}</span>
+          <span style={{ ...s.statNum, color: '#F5A623' }}>{stats.hold}</span>
           <span style={s.statLabel}>HOLD</span>
         </div>
         <div style={s.statDivider}/>
         <div style={s.stat}>
-          <span style={{ ...s.statNum, color: '#F23645' }}>{signals.filter(s => s.signal==='SELL').length}</span>
+          <span style={{ ...s.statNum, color: '#F23645' }}>{stats.sell}</span>
           <span style={s.statLabel}>SELL</span>
         </div>
         <div style={s.statDivider}/>
         <div style={s.stat}>
-          <span style={s.statNum}>{avgConf}%</span>
+          <span style={s.statNum}>{stats.avgConf}%</span>
           <span style={s.statLabel}>AVG CONF</span>
         </div>
         <div style={s.statDivider}/>
@@ -192,7 +204,7 @@ export default function Dashboard() {
                         Sentiment: {selected_sig.sentiment_score >= 0 ? '+' : ''}{selected_sig.sentiment_score?.toFixed(3)}
                       </span>
                       <span style={{ fontSize: 13, color: '#5A6478' }}>
-                        ${selected_sig.price_at_signal?.toFixed(2)}
+                        ${selected_sig.price?.toFixed(2)}
                       </span>
                     </>
                   )}
@@ -267,9 +279,9 @@ export default function Dashboard() {
                           <td style={s.td}><SignalBadge signal={sig.signal}/></td>
                           <td style={s.td}><ConfBar value={sig.confidence} signal={sig.signal}/></td>
                           <td style={s.td}>
-                            <strong>${sig.price_at_signal >= 1000
-                              ? sig.price_at_signal.toLocaleString()
-                              : sig.price_at_signal.toFixed(3)}
+                            <strong>${sig.price >= 1000
+                              ? sig.price.toLocaleString()
+                              : sig.price?.toFixed(3)}
                             </strong>
                           </td>
                           <td style={s.td}>
@@ -358,7 +370,7 @@ export default function Dashboard() {
                         </td>
                         <td style={s.td}><SignalBadge signal={sig.signal}/></td>
                         <td style={s.td}><ConfBar value={sig.confidence} signal={sig.signal}/></td>
-                        <td style={s.td}><span style={{ fontWeight: 500 }}>${sig.price_at_signal?.toFixed(2)}</span></td>
+                        <td style={s.td}><span style={{ fontWeight: 500 }}>${sig.price?.toFixed(2)}</span></td>
                         <td style={s.td}>
                           <span style={{ color: sig.sentiment_score >= 0 ? '#00B87A' : '#F23645', fontWeight: 500 }}>
                             {sig.sentiment_score >= 0 ? '+' : ''}{sig.sentiment_score?.toFixed(3)}
