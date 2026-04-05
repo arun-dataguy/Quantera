@@ -18,7 +18,7 @@ from app.services.auth import (
     update_last_login, validate_refresh_token, verify_password,
 )
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter()
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
