@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import Disclaimer from './components/Disclaimer'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import Landing     from './pages/Landing'
 import Login       from './pages/Login'
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Disclaimer />
         <Routes>
           {/* Public */}
           <Route path="/"              element={<Landing />} />
