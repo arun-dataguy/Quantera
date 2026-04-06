@@ -23,13 +23,21 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Quantera API", lifespan=lifespan)
 
-# CORS — Bearer token auth doesn't need allow_credentials; use allow_origins=["*"]
+# CORS
+_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://quantera.markets",
+    "https://www.quantera.markets",
+] + [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=list(set(_origins)),
+    allow_origin_regex=r"https://quantera.*\.vercel\.app",
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"],
 )
 
 # Health check — must be first route
