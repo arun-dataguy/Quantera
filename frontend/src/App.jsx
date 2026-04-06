@@ -11,6 +11,7 @@ import Intel       from './pages/Intel'
 import Pricing     from './pages/Pricing'
 import Billing     from './pages/Billing'
 import Portfolio from './pages/Portfolio'
+import Market from './pages/Market'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import AuthCallback from './pages/AuthCallback'
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/intel"     element={<ProtectedRoute><Intel /></ProtectedRoute>}/>
           <Route path="/billing"   element={<ProtectedRoute><Billing /></ProtectedRoute>}/>
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>}/>
+          <Route path="/market"    element={<ProtectedRoute><Market /></ProtectedRoute>}/>
 
           {/* Legal */}
           <Route path="/terms"   element={<Terms />} />
