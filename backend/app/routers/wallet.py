@@ -83,8 +83,8 @@ async def get_portfolio(
     total_market_value = 0.0
     positions_out = []
     for pos in positions_orm:
-        live_price   = await fetch_price(pos.ticker)
-        market_value = pos.quantity * (live_price or pos.avg_price)
+        live_price   = await fetch_price(pos.ticker) or pos.avg_price  # fallback to avg if yfinance fails
+        market_value = pos.quantity * live_price
         cost_basis   = pos.quantity * pos.avg_price
         unrealized   = market_value - cost_basis
         pct_change   = (unrealized / cost_basis * 100) if cost_basis else 0.0
@@ -161,10 +161,12 @@ async def execute_trade(
     if action not in ("BUY", "SELL"):
         raise HTTPException(status_code=400, detail="action must be BUY or SELL")
 
-    # Try live price first, fall back to price provided by frontend signal data
-    price = await fetch_price(ticker)
-    if price <= 0 and body.price and body.price > 0:
-        price = body.price   # use the price from the signal (already shown to user)
+    # Use signal price from frontend first (most reliable on Railway)
+    # Only try yfinance if no price was passed
+    if body.price and body.price > 0:
+        price = body.price
+    else:
+        price = await fetch_price(ticker)
     if price <= 0:
         raise HTTPException(status_code=400, detail=f"Could not fetch price for {ticker}")
 
