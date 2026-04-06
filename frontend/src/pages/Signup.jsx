@@ -110,7 +110,7 @@ export default function Signup() {
         </p>
       </div>
 
-      <footer style={s.footer}>© 2024 Quantera AI. Editorial Precision in Trading.</footer>
+      <footer style={s.footer}>© {new Date().getFullYear()} Quantera AI. Editorial Precision in Trading.</footer>
     </div>
   )
 }

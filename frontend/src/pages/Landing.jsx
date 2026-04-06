@@ -165,7 +165,7 @@ export default function Landing() {
       <footer style={s.footer}>
         <div>
           <span style={s.footerBrand}>Quantera AI</span>
-          <p style={s.footerCopy}>© 2024 Quantera AI. Editorial Precision in Trading.</p>
+          <p style={s.footerCopy}>© {new Date().getFullYear()} Quantera AI. Editorial Precision in Trading.</p>
         </div>
         <div style={s.footerLinks}>
           <Link to="/privacy" style={s.footerLink}>Privacy Policy</Link>

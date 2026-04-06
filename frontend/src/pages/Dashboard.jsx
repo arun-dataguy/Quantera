@@ -134,9 +134,8 @@ export default function Dashboard() {
             <button style={{ ...s.navTab, ...(tab==='signals' ? s.navTabActive : {}) }} onClick={() => { setTab('signals'); setActiveMarket('stocks') }}>
               📈 Stocks
             </button>
-            <button style={{ ...s.navTab, ...(tab==='crypto' ? s.navTabActive : {}) }} onClick={() => setTab('crypto')}
-              title={!isPremium ? 'Premium plan required' : ''}>
-              {!isPremium && '🔒 '}₿ Crypto
+            <button style={{ ...s.navTab, ...(tab==='crypto' ? s.navTabActive : {}) }} onClick={() => setTab('crypto')}>
+              ₿ Crypto
             </button>
             <button style={{ ...s.navTab, ...(tab==='chart' ? s.navTabActive : {}) }} onClick={() => setTab('chart')}>Chart</button>
             <Link to="/market" style={s.navTab}>🔥 Market</Link>

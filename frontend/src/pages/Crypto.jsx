@@ -49,24 +49,8 @@ export default function Crypto() {
 
   return (
     <div style={s.root}>
-      {/* ── Top Navbar ── */}
-      <nav style={s.topNav}>
-        <div style={s.navLeft}>
-          <Logo height={30} />
-          <div style={s.navLinks}>
-            <Link to="/dashboard" style={s.navLink}>Dashboard</Link>
-            <Link to="/crypto" style={{ ...s.navLink, ...s.navLinkActive }}>Crypto</Link>
-            <Link to="/pricing" style={s.navLink}>Pricing</Link>
-          </div>
-        </div>
-        <div style={s.navRight}>
-          <Link to="/login" style={s.loginBtn}>Login</Link>
-          <Link to="/signup" style={s.getStartedBtn}>Get Started</Link>
-        </div>
-      </nav>
-
+      <AppSidebar />
       <div style={s.body}>
-        <AppSidebar />
 
         {/* ── Main Content ── */}
         <main style={s.main}>
@@ -150,12 +134,12 @@ export default function Crypto() {
       <footer style={s.footer}>
         <div>
           <span style={s.footerBrand}>Quantera AI</span>
-          <p style={s.footerCopy}>© 2024 Quantera AI. Editorial Precision in Trading.</p>
+          <p style={s.footerCopy}>© {new Date().getFullYear()} Quantera AI. Editorial Precision in Trading.</p>
         </div>
         <div style={s.footerLinks}>
-          {['Privacy Policy', 'Terms of Service', 'API Docs', 'Support'].map(l => (
-            <Link key={l} to="/" style={s.footerLink}>{l}</Link>
-          ))}
+          <Link to="/privacy" style={s.footerLink}>Privacy Policy</Link>
+          <Link to="/terms" style={s.footerLink}>Terms of Service</Link>
+          <Link to="/pricing" style={s.footerLink}>Pricing</Link>
         </div>
       </footer>
     </div>
@@ -163,17 +147,8 @@ export default function Crypto() {
 }
 
 const s = {
-  root: { minHeight: '100vh', background: '#faf8ff', fontFamily: 'Inter, sans-serif', display: 'flex', flexDirection: 'column' },
-  topNav: { position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: 64, background: '#faf8ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', boxShadow: '0 32px 64px rgba(0,84,214,0.05)' },
-  navLeft: { display: 'flex', alignItems: 'center', gap: 32 },
-  navBrand: { fontSize: 20, fontWeight: 700, color: '#161b2b', letterSpacing: '-0.04em' },
-  navLinks: { display: 'flex', gap: 24 },
-  navLink: { fontSize: 14, fontWeight: 500, color: '#424656', textDecoration: 'none', letterSpacing: '-0.01em' },
-  navLinkActive: { fontWeight: 600, color: '#0050cb', borderBottom: '2px solid #0050cb', paddingBottom: 2 },
-  navRight: { display: 'flex', alignItems: 'center', gap: 12 },
-  loginBtn: { fontSize: 14, fontWeight: 500, color: '#424656', padding: '8px 16px', borderRadius: 8, textDecoration: 'none' },
-  getStartedBtn: { fontSize: 14, fontWeight: 600, color: 'white', padding: '10px 20px', borderRadius: 8, background: 'linear-gradient(135deg, #0050cb, #0066ff)', textDecoration: 'none' },
-  body: { display: 'flex', paddingTop: 64, flex: 1 },
+  root: { minHeight: '100vh', background: '#faf8ff', fontFamily: 'Inter, sans-serif', display: 'flex' },
+  body: { display: 'flex', flex: 1, minWidth: 0 },
   sidebar: { width: 240, background: '#faf8ff', display: 'flex', flexDirection: 'column', padding: '24px 16px', position: 'sticky', top: 64, height: 'calc(100vh - 64px)', flexShrink: 0 },
   sidebarTop: { padding: '0 16px 20px' },
   sidebarTitle: { fontSize: 16, fontWeight: 900, color: '#161b2b', margin: 0 },

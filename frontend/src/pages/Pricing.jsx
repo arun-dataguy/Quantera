@@ -152,7 +152,7 @@ export default function Pricing() {
       <footer style={s.footer}>
         <div>
           <span style={s.footerBrand}>Quantera AI</span>
-          <p style={s.footerCopy}>© 2024 Quantera AI. Editorial Precision in Trading.</p>
+          <p style={s.footerCopy}>© {new Date().getFullYear()} Quantera AI. Editorial Precision in Trading.</p>
         </div>
         <div style={s.footerLinks}>
           {['Privacy Policy', 'Terms of Service', 'API Docs', 'Support'].map(l => (
