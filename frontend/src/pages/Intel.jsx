@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-const NEWSAPI_KEY = import.meta.env.VITE_NEWS_API_KEY || ''
 
 const TRENDING = [
   { sym: '₿', name: 'BTC/USD', sub: 'Bitcoin',        change: '+4.2%',  price: '$68,240.21', pos: true,  bg: '#fff7ed', color: '#ea8c00' },
@@ -54,35 +53,30 @@ export default function Intel() {
   const [newCount, setNewCount] = useState(0)
 
   const fetchNews = useCallback(async (filterLabel) => {
-    const q = FILTERS.find(f => f.label === filterLabel)?.query || 'stock market'
     setLoading(true)
     try {
-      // Use NewsAPI if key available, otherwise use mock live-feeling data
-      if (NEWSAPI_KEY) {
-        const res = await fetch(
-          `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=8&apiKey=${NEWSAPI_KEY}`
-        )
-        const data = await res.json()
-        if (data.articles?.length) {
-          setNews(data.articles.map(a => ({
-            source: a.source?.name?.toUpperCase().slice(0, 12) || 'NEWS',
-            time: timeSince(a.publishedAt),
-            publishedAt: a.publishedAt,
-            title: a.title?.replace(' - ' + a.source?.name, '') || '',
-            body: a.description || '',
-            url: a.url,
-            image: a.urlToImage,
-            sentiment: getSentiment(a.title, a.description),
-            tickers: getRelatedTickers(a.title + ' ' + (a.description || '')),
-          })))
-          setNewCount(prev => loading ? 0 : Math.floor(Math.random() * 3) + 1)
-        }
+      const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
+      const res = await fetch(`${API}/news/feed?filter=${filterLabel}`)
+      const data = await res.json()
+
+      if (data.articles?.length) {
+        setNews(data.articles.map(a => ({
+          source:      a.source?.toUpperCase().slice(0, 12) || 'NEWS',
+          time:        timeSince(a.publishedAt),
+          publishedAt: a.publishedAt,
+          title:       a.title?.replace(/ - [^-]+$/, '') || '',
+          body:        a.description || '',
+          url:         a.url,
+          image:       a.image,
+          sentiment:   getSentiment(a.title, a.description),
+          tickers:     getRelatedTickers(a.title + ' ' + (a.description || '')),
+        })))
+        setNewCount(loading ? 0 : Math.floor(Math.random() * 3) + 1)
       } else {
-        // Simulate live feel with rotating timestamps
         setNews(getMockNews())
-        setNewCount(Math.floor(Math.random() * 3) + 1)
       }
-    } catch {
+    } catch (err) {
+      console.error('News fetch error:', err)
       setNews(getMockNews())
     } finally {
       setLoading(false)
@@ -323,7 +317,6 @@ export default function Intel() {
 
 // Mock data that feels live
 function getMockNews() {
-  const now = new Date()
   return [
     { source: 'BLOOMBERG', time: `${Math.floor(Math.random()*5)+1}m ago`, title: 'Federal Reserve Signals Potential Rate Cut in Q3 as Inflation Data Moderates Faster Than Projected', body: 'Chairman Jerome Powell noted that while the central bank remains vigilant, the balance of risks is shifting towards economic growth support as labor markets show signs of cooling.', sentiment: { label: 'BULLISH', color: '#006c46', bg: 'rgba(0,108,70,0.08)' }, tickers: ['SPY'], url: '#', image: null },
     { source: 'REUTERS', time: `${Math.floor(Math.random()*20)+5}m ago`, title: 'EU Competition Commission Targets Major Tech Platforms with New Antitrust Probe', body: 'Brussels moves to investigate dynamic pricing models used by leading e-commerce and cloud infrastructure providers under the Digital Markets Act framework.', sentiment: { label: 'BEARISH', color: '#ba1a1a', bg: 'rgba(186,26,26,0.08)' }, tickers: ['AAPL', 'MSFT', 'AMZN'], url: '#', image: null },
