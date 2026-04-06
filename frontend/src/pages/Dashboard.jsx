@@ -99,8 +99,9 @@ export default function Dashboard() {
         method: 'POST',
         body: JSON.stringify({
           ticker: sig.symbol,
-          action: sig.signal, // BUY or SELL
+          action: sig.signal,
           signal_confidence: sig.confidence,
+          price: sig.price,   // pass signal price as fallback if yfinance fails
         }),
       })
       // Brief confirmation flash
