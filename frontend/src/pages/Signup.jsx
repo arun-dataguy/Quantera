@@ -71,23 +71,23 @@ export default function Signup() {
         ) : (
           <form onSubmit={handleSubmit} style={s.form}>
             <div style={s.fieldGroup}>
-              <label style={s.label}>Full Name</label>
-              <input style={s.input} type="text" placeholder="John Doe"
+              <label htmlFor="signup-name" style={s.label}>Full Name</label>
+              <input id="signup-name" name="fullName" style={s.input} type="text" placeholder="John Doe"
                 value={form.fullName} onChange={e => setForm(f => ({...f, fullName: e.target.value}))} required autoFocus/>
             </div>
             <div style={s.fieldGroup}>
-              <label style={s.label}>Email</label>
-              <input style={s.input} type="email" placeholder="name@company.com"
+              <label htmlFor="signup-email" style={s.label}>Email</label>
+              <input id="signup-email" name="email" style={s.input} type="email" placeholder="name@company.com"
                 value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} required/>
             </div>
             <div style={s.fieldGroup}>
-              <label style={s.label}>Password</label>
-              <input style={s.input} type="password" placeholder="Min. 8 characters"
+              <label htmlFor="signup-password" style={s.label}>Password</label>
+              <input id="signup-password" name="password" style={s.input} type="password" placeholder="Min. 8 characters"
                 value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} required/>
             </div>
 
             <div style={s.checkRow}>
-              <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
+              <input id="signup-agree" type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
                 style={{ marginTop: 2, accentColor: '#0050cb' }}/>
               <span style={s.checkText}>
                 I agree to the{' '}

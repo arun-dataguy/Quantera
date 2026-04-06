@@ -63,17 +63,17 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} style={s.form}>
           <div style={s.fieldGroup}>
-            <label style={s.label}>Email</label>
-            <input style={s.input} type="email" placeholder="name@company.com"
+            <label htmlFor="login-email" style={s.label}>Email</label>
+            <input id="login-email" name="email" style={s.input} type="email" placeholder="name@company.com"
               value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} required autoFocus/>
           </div>
 
           <div style={s.fieldGroup}>
             <div style={s.labelRow}>
-              <label style={s.label}>Password</label>
+              <label htmlFor="login-password" style={s.label}>Password</label>
               <Link to="/forgot-password" style={s.forgotLink}>Forgot password?</Link>
             </div>
-            <input style={s.input} type="password" placeholder="••••••••"
+            <input id="login-password" name="password" style={s.input} type="password" placeholder="••••••••"
               value={form.password} onChange={e => setForm(f => ({...f, password: e.target.value}))} required/>
           </div>
 
@@ -90,7 +90,7 @@ export default function Login() {
         </p>
       </div>
 
-      <footer style={s.footer}>© 2024 Quantera AI. Editorial Precision in Trading.</footer>
+      <footer style={s.footer}>© {new Date().getFullYear()} Quantera AI. Editorial Precision in Trading.</footer>
     </div>
   )
 }
