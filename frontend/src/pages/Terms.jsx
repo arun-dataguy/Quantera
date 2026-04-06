@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
 
-const LAST_UPDATED = 'April 2025'
+const LAST_UPDATED = 'April 2026'
 
 export default function Terms() {
   return (
@@ -29,7 +29,7 @@ export default function Terms() {
 
           <Section title="1. Acceptance of Terms">
             <p>By accessing or using Quantera AI ("the Service", "we", "us", or "our"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Service.</p>
-            <p>Quantera AI is a student research project developed as part of an MSc Artificial Intelligence programme at the University of Leicester. It is operated on a non-commercial basis during its beta phase.</p>
+            <p>Quantera AI is developed as part of an MSc Artificial Intelligence research programme at the University of Leicester and is currently operating in public beta at <strong>quantera.markets</strong>.</p>
           </Section>
 
           <Section title="2. Description of Service">
@@ -108,7 +108,7 @@ export default function Terms() {
               <li>Service interruptions or data inaccuracies</li>
               <li>Unauthorised access to your account</li>
             </ul>
-            <p>Our total liability to you for any claim shall not exceed the amount you paid us in the 12 months preceding the claim, or £50, whichever is lower.</p>
+            <p>Our total liability to you for any claim shall not exceed the amount you paid us in the 3 months preceding the claim, or £50, whichever is greater.</p>
           </Section>
 
           <Section title="11. Indemnification">
@@ -127,11 +127,23 @@ export default function Terms() {
             <p>These Terms shall be governed by and construed in accordance with the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
           </Section>
 
-          <Section title="15. Contact">
+          <Section title="15. Third-Party Broker Connectivity">
+            <p>Quantera AI may integrate with third-party brokerage and trading infrastructure providers, including <strong>Alpaca Markets Inc.</strong>, to facilitate paper trading simulations and, in future, live order execution for eligible users.</p>
+            <ul>
+              <li>Any brokerage connectivity is subject to the terms and conditions of the respective broker</li>
+              <li>Quantera AI acts solely as a signal and analytics layer — all order execution is handled by the third-party broker</li>
+              <li>Users must independently agree to the broker's terms before enabling live trading features</li>
+              <li>Quantera AI is not responsible for order execution, fills, rejections, or account actions performed by the broker</li>
+            </ul>
+            <p>Current integrations: <strong>Alpaca Markets Inc.</strong> (paper trading infrastructure). Live trading features are not yet enabled.</p>
+          </Section>
+
+          <Section title="16. Contact">
             <p>For questions about these Terms, please contact us at:<br/>
-            <strong>Quantera AI Research Project</strong><br/>
+            <strong>Quantera AI</strong><br/>
             University of Leicester, MSc Artificial Intelligence<br/>
-            Email: <a href="mailto:quantera.ai.project@gmail.com" style={s.link}>quantera.ai.project@gmail.com</a></p>
+            Website: <a href="https://quantera.markets" style={s.link}>quantera.markets</a><br/>
+            Email: <a href="mailto:hello@quantera.markets" style={s.link}>hello@quantera.markets</a></p>
           </Section>
 
         </div>

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
 
-const LAST_UPDATED = 'April 2025'
+const LAST_UPDATED = 'April 2026'
 
 export default function Privacy() {
   return (
@@ -32,8 +32,8 @@ export default function Privacy() {
         <div style={s.body}>
 
           <Section title="1. Who We Are">
-            <p>Quantera AI ("we", "us", "our") is a student research project developed as part of an MSc Artificial Intelligence programme at the University of Leicester, United Kingdom. We are the data controller responsible for your personal data.</p>
-            <p>Contact: <a href="mailto:quantera.ai.project@gmail.com" style={s.link}>quantera.ai.project@gmail.com</a></p>
+            <p>Quantera AI ("we", "us", "our") is developed as part of an MSc Artificial Intelligence research programme at the University of Leicester, United Kingdom, and operates the platform at <strong>quantera.markets</strong>. We are the data controller responsible for your personal data.</p>
+            <p>Contact: <a href="mailto:hello@quantera.markets" style={s.link}>hello@quantera.markets</a> · <a href="https://quantera.markets" style={s.link}>quantera.markets</a></p>
           </Section>
 
           <Section title="2. What Data We Collect">
@@ -95,6 +95,7 @@ export default function Privacy() {
               <li><strong>Vercel Inc.</strong> — frontend hosting (USA, Standard Contractual Clauses apply)</li>
               <li><strong>Google LLC</strong> — if you use Google Sign-In (subject to Google's Privacy Policy)</li>
               <li><strong>NewsAPI</strong> — we make server-side requests for news data; no personal data is shared</li>
+              <li><strong>Alpaca Markets Inc.</strong> — third-party brokerage infrastructure for paper trading simulation. When broker connectivity is enabled, your account identifier may be shared with Alpaca to facilitate order routing. Alpaca's own privacy policy applies to data processed on their platform. No personal financial data beyond what is necessary for order execution is shared.</li>
             </ul>
             <p>We may disclose data to law enforcement if required by law or legal process.</p>
           </Section>
@@ -120,7 +121,7 @@ export default function Privacy() {
               <li><strong>Right to object</strong> — object to processing based on legitimate interests</li>
               <li><strong>Right to withdraw consent</strong> — at any time, where processing is consent-based</li>
             </ul>
-            <p>To exercise any of these rights, email us at <a href="mailto:quantera.ai.project@gmail.com" style={s.link}>quantera.ai.project@gmail.com</a>. We will respond within 30 days.</p>
+            <p>To exercise any of these rights, email us at <a href="mailto:hello@quantera.markets" style={s.link}>hello@quantera.markets</a>. We will respond within 30 days.</p>
             <p>You have the right to lodge a complaint with the <strong>Information Commissioner's Office (ICO)</strong> at ico.org.uk if you believe we have mishandled your data.</p>
           </Section>
 
@@ -130,7 +131,7 @@ export default function Privacy() {
               <li><code style={s.code}>q_access</code> — your session access token (expires in 15–60 minutes)</li>
               <li><code style={s.code}>q_refresh</code> — your refresh token (expires in 7 days)</li>
             </ul>
-            <p>These are strictly necessary for the service to function. We do not use tracking, advertising, or analytics cookies.</p>
+            <p>These are strictly necessary for the service to function. We do not currently use tracking, advertising, or analytics cookies. If we introduce analytics in the future, we will update this policy and notify you in advance.</p>
           </Section>
 
           <Section title="9. Security">
@@ -166,7 +167,7 @@ export default function Privacy() {
             <p>
               <strong>Quantera AI Research Project</strong><br/>
               University of Leicester, MSc Artificial Intelligence<br/>
-              Email: <a href="mailto:quantera.ai.project@gmail.com" style={s.link}>quantera.ai.project@gmail.com</a>
+              Email: <a href="mailto:hello@quantera.markets" style={s.link}>hello@quantera.markets</a>
             </p>
             <p>We aim to respond to all requests within 30 days.</p>
           </Section>
