@@ -14,7 +14,7 @@ from app.routers.auth import get_current_user, get_db
 
 stripe.api_key = settings.stripe_secret_key
 
-router = APIRouter(prefix="/stripe", tags=["Stripe"])
+router = APIRouter(tags=["Stripe"])
 
 
 class CheckoutRequest(BaseModel):

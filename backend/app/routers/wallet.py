@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User, VirtualPortfolio, VirtualPosition, VirtualTrade
 from app.routers.auth import get_current_user, get_db
 
-router = APIRouter(prefix="/wallet", tags=["Wallet"])
+router = APIRouter(tags=["Wallet"])
 
 STARTING_BALANCE = 10_000.0
 MAX_POSITION_PCT  = 0.20   # max 20% of portfolio in one ticker
