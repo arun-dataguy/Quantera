@@ -27,7 +27,9 @@ app = FastAPI(title="Quantera API", lifespan=lifespan)
 _default_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "https://quantera-ebon.vercel.app",
+    "https://quantera-ebon.vercel.app",   # Vercel preview fallback
+    "https://quantera.markets",
+    "https://www.quantera.markets",
 ]
 
 _env_origins = [
@@ -39,7 +41,7 @@ ALLOWED_ORIGINS = list(set(_default_origins + _env_origins))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"https://quantera.*\.vercel\.app",
+    allow_origin_regex=r"https://(quantera.*\.vercel\.app|quantera\.markets|www\.quantera\.markets)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

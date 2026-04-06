@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     secret_key: str = "quantera_dev_secret"
     api_port: int = 8003
-    frontend_url: str = "http://localhost:3000"
+    frontend_url: str = "https://quantera.markets"
 
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     stripe_premium_price_id: str = ""
 
     email_api_key: str = ""
-    email_from: str = "noreply@quantera.io"
+    email_from: str = "noreply@quantera.markets"
 
     allowed_origins: list = []
 
