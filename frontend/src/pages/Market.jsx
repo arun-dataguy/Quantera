@@ -1,17 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import Logo from '../components/Logo'
-
-const NAV_LINKS = [
-  { label: 'Dashboard',     to: '/dashboard',  icon: '⊞' },
-  { label: 'Market Movers', to: '/market',     icon: '🔥', active: true },
-  { label: 'Signals',       to: '/dashboard',  icon: '⚡' },
-  { label: 'Crypto',        to: '/crypto',     icon: '₿' },
-  { label: 'Portfolio',     to: '/portfolio',  icon: '💼' },
-  { label: 'Intel Feed',    to: '/intel',      icon: '📰' },
-  { label: 'Pricing',       to: '/pricing',    icon: '💳' },
-]
+import AppSidebar from '../components/AppSidebar'
 
 function SignalBadge({ signal }) {
   if (!signal) return null
@@ -94,32 +84,7 @@ export default function Market() {
 
   return (
     <div style={s.root}>
-      {/* ── Sidebar ── */}
-      <aside style={s.sidebar}>
-        <div style={s.sidebarLogo}>
-          <Logo variant="white" height={28} />
-        </div>
-
-        <nav style={s.sideNav}>
-          {NAV_LINKS.map(link => (
-            <Link key={link.to + link.label} to={link.to}
-              style={{ ...s.sideLink, ...(link.active ? s.sideLinkActive : {}) }}>
-              <span style={s.sideLinkIcon}>{link.icon}</span>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div style={s.sidebarBottom}>
-          <div style={s.userChip}>
-            <div style={s.userAvatar}>{user?.full_name?.charAt(0) || 'Q'}</div>
-            <div>
-              <p style={s.userName}>{user?.full_name?.split(' ')[0] || 'Trader'}</p>
-              <p style={s.userPlan}>Beta · Full Access</p>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <AppSidebar />
 
       {/* ── Main ── */}
       <div style={s.main}>

@@ -139,6 +139,7 @@ export default function Dashboard() {
               {!isPremium && '🔒 '}₿ Crypto
             </button>
             <button style={{ ...s.navTab, ...(tab==='chart' ? s.navTabActive : {}) }} onClick={() => setTab('chart')}>Chart</button>
+            <Link to="/market" style={s.navTab}>🔥 Market</Link>
             <Link to="/intel" style={{ ...s.navTab, position: 'relative' }}>
               📰 Intel
               <span style={{ position: 'absolute', top: -4, right: -4, background: '#006c46', color: 'white', fontSize: 8, fontWeight: 700, padding: '2px 5px', borderRadius: 4 }}>NEW</span>

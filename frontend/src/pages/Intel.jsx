@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import Logo from '../components/Logo'
+import AppSidebar from '../components/AppSidebar'
 
 
 const TRENDING = [
@@ -97,55 +97,21 @@ export default function Intel() {
 
   return (
     <div style={s.root}>
-      {/* Navbar */}
-      <nav style={s.topNav}>
-        <div style={s.navInner}>
-          <div style={s.navLeft}>
-            <Logo height={30} />
-            <div style={s.navLinks}>
-              {['Dashboard', 'Markets', 'Portfolio', 'Insights'].map(item => (
-                <Link key={item} to={item === 'Dashboard' ? '/dashboard' : '#'}
-                  style={{ ...s.navLink, ...(item === 'Markets' ? s.navLinkActive : {}) }}>
-                  {item}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div style={s.navRight}>
-            <div style={s.searchWrap}>
-              <span style={s.searchIcon}>🔍</span>
-              <input style={s.searchInput} placeholder="Search markets..." type="text"/>
-            </div>
-            <button style={s.iconBtn}>🔔</button>
-            <div style={s.userAvatar}>{user?.full_name?.charAt(0) || 'A'}</div>
-          </div>
-        </div>
-      </nav>
+      <AppSidebar />
 
+      {/* Main */}
       <div style={s.body}>
-        {/* Left Sidebar */}
-        <aside style={s.sidebar}>
-          <div style={s.sidebarLabel}>Intelligence Feed</div>
-          <nav style={s.sideNav}>
+        <main style={s.main}>
+          {/* Filter tabs */}
+          <div style={s.filterTabs}>
             {FILTERS.map(item => (
               <button key={item.label} onClick={() => setFilter(item.label)}
-                style={{ ...s.sideNavItem, ...(filter === item.label ? s.sideNavItemActive : {}) }}>
-                <span>{item.icon}</span>
-                <span>{item.label}</span>
+                style={{ ...s.filterTab, ...(filter === item.label ? s.filterTabActive : {}) }}>
+                {item.icon} {item.label}
               </button>
             ))}
-          </nav>
-          {!isPro && (
-            <div style={s.upgradeCta}>
-              <p style={s.upgradeTitle}>PRO FEATURES</p>
-              <p style={s.upgradeSub}>Unlock real-time volatility alerts and sentiment heatmaps.</p>
-              <Link to="/pricing" style={s.upgradeBtn}>Upgrade to Pro</Link>
-            </div>
-          )}
-        </aside>
+          </div>
 
-        {/* Main */}
-        <main style={s.main}>
           {/* Header */}
           <div style={s.pageHeader}>
             <div style={s.liveRow}>
@@ -302,18 +268,6 @@ export default function Intel() {
         </main>
       </div>
 
-      <footer style={s.footer}>
-        <div>
-          <span style={s.footerBrand}>Quantera AI</span>
-          <p style={s.footerCopy}>© 2024 Quantera AI. All rights reserved. Precision & Luminescence.</p>
-        </div>
-        <div style={s.footerLinks}>
-          {['Privacy Policy', 'Terms of Service', 'API Documentation', 'Support'].map(l => (
-            <Link key={l} to="/" style={s.footerLink}>{l}</Link>
-          ))}
-        </div>
-      </footer>
-
       <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}} @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}`}</style>
     </div>
   )
@@ -331,31 +285,12 @@ function getMockNews() {
 }
 
 const s = {
-  root: { minHeight: '100vh', background: '#faf8ff', fontFamily: 'Inter, sans-serif' },
-  topNav: { position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', height: 64 },
-  navInner: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: '100%', maxWidth: 1600, margin: '0 auto' },
-  navLeft: { display: 'flex', alignItems: 'center', gap: 32 },
-  navBrand: { fontSize: 22, fontWeight: 900, color: '#1d4ed8', letterSpacing: '-0.04em' },
-  navLinks: { display: 'flex', gap: 28 },
-  navLink: { fontSize: 14, fontWeight: 500, color: '#475569', textDecoration: 'none' },
-  navLinkActive: { fontWeight: 700, color: '#1d40af', borderBottom: '2px solid #1d40af', paddingBottom: 2 },
-  navRight: { display: 'flex', alignItems: 'center', gap: 12 },
-  searchWrap: { position: 'relative', display: 'flex', alignItems: 'center' },
-  searchIcon: { position: 'absolute', left: 10, fontSize: 13 },
-  searchInput: { paddingLeft: 32, paddingRight: 16, paddingTop: 8, paddingBottom: 8, background: '#f2f3ff', border: 'none', borderRadius: 9999, fontSize: 13, width: 220, outline: 'none', fontFamily: 'Inter, sans-serif' },
-  iconBtn: { padding: 8, background: 'transparent', border: 'none', fontSize: 16, cursor: 'pointer' },
-  userAvatar: { width: 32, height: 32, borderRadius: '50%', background: '#dee1f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#0050cb' },
-  body: { display: 'flex', marginTop: 64, minHeight: 'calc(100vh - 64px)' },
-  sidebar: { width: 240, background: '#f1f5f9', display: 'flex', flexDirection: 'column', padding: '28px 16px', position: 'sticky', top: 64, height: 'calc(100vh - 64px)', flexShrink: 0, overflowY: 'auto' },
-  sidebarLabel: { fontSize: 11, fontWeight: 700, color: '#727687', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 16 },
-  sideNav: { display: 'flex', flexDirection: 'column', gap: 4 },
-  sideNavItem: { display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 8, fontSize: 14, fontWeight: 600, color: '#475569', background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', textAlign: 'left', transition: 'all 0.15s' },
-  sideNavItemActive: { background: 'white', color: '#1d4ed8', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
-  upgradeCta: { marginTop: 'auto', padding: 16, background: 'rgba(0,80,203,0.06)', borderRadius: 12, border: '1px solid rgba(0,80,203,0.1)' },
-  upgradeTitle: { fontSize: 10, fontWeight: 700, color: '#0050cb', letterSpacing: '0.1em', margin: '0 0 6px' },
-  upgradeSub: { fontSize: 11, color: '#424656', lineHeight: 1.6, margin: '0 0 12px' },
-  upgradeBtn: { display: 'block', width: '100%', padding: 8, background: '#0050cb', color: 'white', borderRadius: 8, textDecoration: 'none', fontSize: 12, fontWeight: 700, textAlign: 'center' },
-  main: { flex: 1, padding: '32px', background: '#faf8ff', minWidth: 0 },
+  root: { minHeight: '100vh', background: '#faf8ff', fontFamily: 'Inter, sans-serif', display: 'flex' },
+  body: { display: 'flex', flex: 1, minHeight: '100vh' },
+  main: { flex: 1, padding: '32px', background: '#faf8ff', minWidth: 0, overflowY: 'auto' },
+  filterTabs: { display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' },
+  filterTab: { padding: '8px 16px', borderRadius: 8, border: '1px solid #e0e3ef', background: 'white', fontSize: 13, fontWeight: 500, color: '#424656', cursor: 'pointer', fontFamily: 'Inter, sans-serif', transition: 'all 0.15s' },
+  filterTabActive: { background: '#0050cb', color: 'white', border: '1px solid #0050cb', fontWeight: 700 },
   pageHeader: { marginBottom: 24 },
   liveRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' },
   liveDot: { width: 8, height: 8, borderRadius: '50%', background: '#006c46', animation: 'pulse 2s infinite', flexShrink: 0 },

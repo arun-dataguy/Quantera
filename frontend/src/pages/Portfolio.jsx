@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import Logo from '../components/Logo'
+import AppSidebar from '../components/AppSidebar'
 
 const STARTING_BALANCE = 10000
 
@@ -65,27 +65,7 @@ export default function Portfolio() {
 
   return (
     <div style={s.root}>
-      {/* Sidebar nav */}
-      <aside style={s.sidebar}>
-        <Logo variant="white" height={32} style={{ padding: '0 16px 24px' }} />
-        <nav style={s.nav}>
-          {[
-            { label: 'Dashboard',  to: '/dashboard' },
-            { label: 'Crypto',     to: '/crypto' },
-            { label: 'Portfolio',  to: '/portfolio', active: true },
-            { label: 'Intel Feed', to: '/intel' },
-            { label: 'Pricing',    to: '/pricing' },
-          ].map(link => (
-            <Link key={link.to} to={link.to} style={{ ...s.navLink, ...(link.active ? s.navLinkActive : {}) }}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <div style={s.sidebarFooter}>
-          <div style={s.userEmail}>{user?.email}</div>
-          <div style={s.planBadge}>{user?.plan?.toUpperCase() || 'FREE'}</div>
-        </div>
-      </aside>
+      <AppSidebar />
 
       {/* Main content */}
       <main style={s.main}>

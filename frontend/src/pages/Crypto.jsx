@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
-import Logo from '../components/Logo'
+import AppSidebar from '../components/AppSidebar'
 
 const CRYPTO_DATA = [
   { name: 'Bitcoin',  ticker: 'BTC', price: '$64,281.05', signal: 'BUY',  conf: 88, confLabel: '88% Extreme',  sentiment: 74.2, sentDir: 'up',   change: '+3.42%', pos: true,  color: '#f7931a', icon: '₿' },
@@ -66,45 +66,7 @@ export default function Crypto() {
       </nav>
 
       <div style={s.body}>
-        {/* ── Sidebar ── */}
-        <aside style={s.sidebar}>
-          <div style={s.sidebarTop}>
-            <p style={s.sidebarTitle}>{user?.full_name || 'Quantera AI'}</p>
-            <p style={s.sidebarPlan}>Beta — Full Access</p>
-          </div>
-
-          <nav style={s.sideNav}>
-            {[
-              { label: 'Overview',       path: '/dashboard', active: false },
-              { label: 'Market Signals', path: '/crypto',    active: true  },
-              { label: 'Portfolio',      path: '/portfolio', active: false },
-              { label: 'Settings',       path: '/settings',  active: false },
-            ].map(item => (
-              <Link key={item.path} to={item.path}
-                style={{ ...s.sideNavItem, ...(item.active ? s.sideNavItemActive : {}) }}>
-                <span style={s.sideNavIcon}>
-                  {item.label === 'Overview' ? '⊞' : item.label === 'Market Signals' ? '⚡' : item.label === 'Portfolio' ? '💼' : '⚙'}
-                </span>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div style={s.sidebarBottom}>
-            <Link to="/signals" style={s.newTradeBtn}>
-              + New Trade
-            </Link>
-            {user && (
-              <div style={s.userRow}>
-                <div style={s.userAvatar}>{user.full_name?.charAt(0) || 'A'}</div>
-                <div>
-                  <p style={s.userNameText}>{user.full_name || 'Trader'}</p>
-                  <p style={s.userPlanText}>Beta — Full Access</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </aside>
+        <AppSidebar />
 
         {/* ── Main Content ── */}
         <main style={s.main}>
