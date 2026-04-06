@@ -34,11 +34,16 @@ export default function Portfolio() {
   useEffect(() => { loadPortfolio() }, [loadPortfolio])
 
   const handleSell = async (ticker) => {
+    const pos = portfolio?.positions?.find(p => p.ticker === ticker)
     setTradeLoading(ticker)
     try {
       await apiFetch('/wallet/trade', {
         method: 'POST',
-        body: JSON.stringify({ ticker, action: 'SELL' }),
+        body: JSON.stringify({
+          ticker,
+          action: 'SELL',
+          price: pos?.current_price || pos?.avg_price,  // pass known price so yfinance isn't needed
+        }),
       })
       await loadPortfolio()
     } catch (e) { alert(e.message) }
