@@ -237,7 +237,7 @@ export default function Intel() {
                           </div>
                         )}
                       </div>
-                      {item.image && (
+                      {item.image && item.image.startsWith('https://') && (
                         <img src={item.image} alt="" style={s.newsImage}
                           onError={e => e.target.style.display = 'none'}/>
                       )}

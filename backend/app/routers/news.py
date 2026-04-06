@@ -5,6 +5,15 @@ import time
 
 router = APIRouter()
 
+
+def _safe_image(url: str | None) -> str | None:
+    """Only return image URLs that are HTTPS — drops http:// to prevent mixed content."""
+    if not url:
+        return None
+    if url.startswith("https://"):
+        return url
+    return None  # drop http:// images entirely
+
 NEWS_API_KEY = os.getenv("NEWS_API_KEY", "ac418135e878478494b847ea5e9bf2b5")
 
 QUERIES = {
@@ -50,12 +59,17 @@ async def get_news_feed(filter: str = Query("Global")):
                 "title":       (a.get("title") or "").replace(" - " + (a.get("source") or {}).get("name", ""), ""),
                 "description": a.get("description") or "",
                 "url":         a.get("url") or "",
-                "image":       a.get("urlToImage"),
+                "image":       _safe_image(a.get("urlToImage")),
                 "publishedAt": a.get("publishedAt") or "",
             }
             for a in articles
             if a.get("title") and "[Removed]" not in (a.get("title") or "")
         ]
+
+        # Filter out any remaining http:// image URLs (belt-and-braces)
+        for a in cleaned:
+            if a.get("image") and not a["image"].startswith("https://"):
+                a["image"] = None
 
         result = {"articles": cleaned, "filter": filter, "total": len(cleaned)}
         _cache[filter] = result
