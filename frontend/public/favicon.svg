@@ -1,11 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
-  <!-- Rounded square background -->
-  <rect x="0" y="0" width="80" height="80" rx="20" fill="#0050CB"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <!-- Blue rounded square background -->
+  <rect width="80" height="80" rx="18" fill="#0050CB"/>
+
   <!-- Q circle ring -->
-  <circle cx="40" cy="40" r="24" fill="none" stroke="white" stroke-width="4.5"/>
-  <!-- Pulse line cutting through Q -->
+  <circle cx="37" cy="36" r="20" fill="none" stroke="white" stroke-width="4.5"/>
+
+  <!-- Q tail — starts inside ring, exits at ~5 o'clock, extends lower-right -->
+  <line x1="44" y1="49" x2="56" y2="63" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- Rising candlestick trend line (lower-left → upper-right, with one dip) -->
   <polyline
-    points="16,40 24,40 28,50 33,22 40,54 46,32 51,40 64,40"
-    fill="none" stroke="white" stroke-width="3.5"
+    points="21,47 28,43 33,45 39,36 46,30 53,25"
+    fill="none" stroke="white" stroke-width="3.2"
     stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
