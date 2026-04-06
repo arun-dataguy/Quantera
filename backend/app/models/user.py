@@ -1,9 +1,9 @@
 from datetime import datetime
 from sqlalchemy import (
-    BigInteger, Boolean, Column, DateTime, String,
-    Text, func, Enum as SAEnum
+    BigInteger, Boolean, Column, DateTime, Float, Integer,
+    String, Text, func, Enum as SAEnum, ForeignKey
 )
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, relationship
 import enum
 
 
@@ -43,6 +43,49 @@ class User(Base):
     created_at      = Column(DateTime, server_default=func.now())
     updated_at      = Column(DateTime, server_default=func.now(), onupdate=func.now())
     last_login_at   = Column(DateTime)
+
+
+class VirtualPortfolio(Base):
+    __tablename__ = "virtual_portfolios"
+
+    id            = Column(BigInteger, primary_key=True, autoincrement=True)
+    user_id       = Column(BigInteger, ForeignKey("users.id"), unique=True, nullable=False)
+    cash_balance  = Column(Float, default=10000.0, nullable=False)  # starts at $10,000
+    created_at    = Column(DateTime, server_default=func.now())
+    updated_at    = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    positions = relationship("VirtualPosition", back_populates="portfolio", cascade="all, delete-orphan")
+    trades    = relationship("VirtualTrade",    back_populates="portfolio", cascade="all, delete-orphan", order_by="VirtualTrade.executed_at.desc()")
+
+
+class VirtualPosition(Base):
+    __tablename__ = "virtual_positions"
+
+    id            = Column(BigInteger, primary_key=True, autoincrement=True)
+    portfolio_id  = Column(BigInteger, ForeignKey("virtual_portfolios.id"), nullable=False)
+    ticker        = Column(String(20), nullable=False)
+    quantity      = Column(Float, nullable=False)
+    avg_price     = Column(Float, nullable=False)
+    created_at    = Column(DateTime, server_default=func.now())
+    updated_at    = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    portfolio = relationship("VirtualPortfolio", back_populates="positions")
+
+
+class VirtualTrade(Base):
+    __tablename__ = "virtual_trades"
+
+    id                = Column(BigInteger, primary_key=True, autoincrement=True)
+    portfolio_id      = Column(BigInteger, ForeignKey("virtual_portfolios.id"), nullable=False)
+    ticker            = Column(String(20), nullable=False)
+    action            = Column(String(10), nullable=False)   # BUY / SELL
+    quantity          = Column(Float, nullable=False)
+    price             = Column(Float, nullable=False)
+    total_value       = Column(Float, nullable=False)
+    signal_confidence = Column(Float)
+    executed_at       = Column(DateTime, server_default=func.now())
+
+    portfolio = relationship("VirtualPortfolio", back_populates="trades")
 
 
 class EmailVerification(Base):

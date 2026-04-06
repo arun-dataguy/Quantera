@@ -141,7 +141,7 @@ export default function Crypto() {
                 </div>
 
                 <button style={s.unlockBtn} onClick={handleUpgrade} disabled={upgrading}>
-                  🔒 {upgrading ? 'Loading…' : 'Unlock Crypto — $29.99/mo'}
+                  🔒 {upgrading ? 'Loading…' : 'Unlock Crypto — $25/mo'}
                 </button>
                 <p style={s.trialText}>CANCEL ANYTIME • 7-DAY FREE TRIAL INCLUDED</p>
               </div>

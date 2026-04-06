@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -62,6 +62,7 @@ export default function Dashboard() {
   const [tab, setTab]                 = useState('signals') // 'signals' | 'chart' | 'crypto'
   const [activeMarket, setActiveMarket] = useState('stocks') // 'stocks' | 'crypto'
   const [cryptoSignals, setCryptoSignals] = useState(CRYPTO_MOCK)
+  const [paperTrading, setPaperTrading] = useState(null) // ticker being paper-traded
 
   useEffect(() => {
     const fetchSignals = async () => {
@@ -88,6 +89,26 @@ export default function Dashboard() {
     const interval = setInterval(fetchSignals, 30 * 60 * 1000) // refresh every 30 mins
     return () => clearInterval(interval)
   }, [])
+
+  const handlePaperTrade = useCallback(async (sig) => {
+    if (sig.signal === 'HOLD') return
+    setPaperTrading(sig.symbol)
+    try {
+      await apiFetch('/wallet/trade', {
+        method: 'POST',
+        body: JSON.stringify({
+          ticker: sig.symbol,
+          action: sig.signal, // BUY or SELL
+          signal_confidence: sig.confidence,
+        }),
+      })
+      // Brief confirmation flash
+      setTimeout(() => setPaperTrading(null), 800)
+    } catch (e) {
+      alert(`Paper trade failed: ${e.message}`)
+      setPaperTrading(null)
+    }
+  }, [apiFetch])
 
   const handleUpgrade = async (plan) => {
     setUpgrading(true)
@@ -127,6 +148,7 @@ export default function Dashboard() {
             </Link>
             <Link to="/pricing" style={s.navTab}>Pricing</Link>
             <Link to="/billing" style={s.navTab}>Billing</Link>
+            <Link to="/portfolio" style={s.navTab}>Portfolio</Link>
           </div>
         </div>
         <div style={s.navRight}>
@@ -166,7 +188,7 @@ export default function Dashboard() {
         </div>
         {!isPro && (
           <button style={s.upgradeBarBtn} onClick={() => handleUpgrade('pro')} disabled={upgrading}>
-            {upgrading ? 'Loading…' : '⚡ Upgrade to Pro — $9.99/mo'}
+            {upgrading ? 'Loading…' : '⚡ Upgrade to Pro — $10/mo'}
           </button>
         )}
       </div>
@@ -238,7 +260,7 @@ export default function Dashboard() {
                 ))}
               </div>
               <button style={s.gateBtn} onClick={() => handleUpgrade('premium')}>
-                Unlock Crypto — $29.99/mo
+                Unlock Crypto — $25/mo
               </button>
               <p style={s.gateDisclaimer}>Not financial advice. Crypto trading involves significant risk.</p>
             </div>
@@ -360,6 +382,7 @@ export default function Dashboard() {
                       <th style={s.th}>Sentiment</th>
                       <th style={s.th}>Technical</th>
                       <th style={s.th}>Chart</th>
+                      <th style={s.th}>Paper Trade</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -386,6 +409,23 @@ export default function Dashboard() {
                             View →
                           </button>
                         </td>
+                        <td style={s.td}>
+                          {sig.signal !== 'HOLD' ? (
+                            <button
+                              style={{
+                                ...s.paperBtn,
+                                background: paperTrading === sig.symbol ? '#dcfce7' : (sig.signal === 'BUY' ? '#dcfce7' : '#fee2e2'),
+                                color: sig.signal === 'BUY' ? '#166534' : '#991b1b',
+                              }}
+                              onClick={() => handlePaperTrade(sig)}
+                              disabled={paperTrading === sig.symbol}
+                            >
+                              {paperTrading === sig.symbol ? '✓ Done' : `Paper ${sig.signal}`}
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: 11, color: '#8A94A6' }}>—</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -403,7 +443,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <button style={s.lockBtn} onClick={() => handleUpgrade('pro')} disabled={upgrading}>
-                    {upgrading ? 'Loading…' : 'Upgrade to Pro — $9.99/mo'}
+                    {upgrading ? 'Loading…' : 'Upgrade to Pro — $10/mo'}
                   </button>
                 </div>
               )}
@@ -495,4 +535,5 @@ const s = {
   cryptoSym: { fontSize: 13, fontWeight: 700, color: '#0A0F1E' },
   gateBtn: { padding: '14px 32px', borderRadius: 10, border: 'none', background: '#0066FF', color: 'white', fontSize: 15, fontWeight: 600, cursor: 'pointer', marginBottom: 16 },
   gateDisclaimer: { fontSize: 12, color: '#8A94A6' },
+  paperBtn: { padding: '5px 10px', borderRadius: 6, border: 'none', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', whiteSpace: 'nowrap' },
 }   

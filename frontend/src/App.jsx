@@ -10,6 +10,7 @@ import Crypto      from './pages/Crypto'
 import Intel       from './pages/Intel'
 import Pricing     from './pages/Pricing'
 import Billing     from './pages/Billing'
+import Portfolio from './pages/Portfolio'
 import AuthCallback from './pages/AuthCallback'
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/crypto"    element={<ProtectedRoute><Crypto /></ProtectedRoute>}/>
           <Route path="/intel"     element={<ProtectedRoute><Intel /></ProtectedRoute>}/>
           <Route path="/billing"   element={<ProtectedRoute><Billing /></ProtectedRoute>}/>
+          <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>}/>
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />

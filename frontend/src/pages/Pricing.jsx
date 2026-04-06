@@ -13,7 +13,7 @@ const PLANS = [
     cta: 'Start for free', ctaPath: '/signup',
   },
   {
-    id: 'pro', label: 'PRO', price: '$9.99', period: '/month', featured: true,
+    id: 'pro', label: 'PRO', price: '$10', period: '/month', featured: true,
     features: [
       { text: 'Unlimited signals', included: true },
       { text: 'AI confidence scores', included: true },
@@ -23,7 +23,7 @@ const PLANS = [
     cta: 'Upgrade to Pro', ctaPath: null,
   },
   {
-    id: 'premium', label: 'PREMIUM', price: '$29.99', period: '/month', featured: false,
+    id: 'premium', label: 'PREMIUM', price: '$25', period: '/month', featured: false,
     features: [
       { text: 'Everything in Pro', included: true },
       { text: 'Full Crypto signals', included: true },
