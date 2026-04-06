@@ -19,7 +19,7 @@ async def get_signals(
 ):
     """Get live AI trading signals."""
     # Crypto requires Premium
-    if market == "crypto" and current_user.plan not in [PlanTier.PREMIUM]:
+    if market == "crypto" and current_user.plan not in [PlanTier.premium]:
         raise HTTPException(
             status_code=403,
             detail="Crypto signals require Premium plan"

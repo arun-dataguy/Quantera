@@ -94,7 +94,7 @@ def auth_response(user: User, access_token: str, refresh_token: str) -> dict:
 # ── Database dependency ───────────────────────────────────────────────────────
 
 async def get_db():
-    from app.main import AsyncSessionLocal
+    from app.database import AsyncSessionLocal
     async with AsyncSessionLocal() as session:
         yield session
 
