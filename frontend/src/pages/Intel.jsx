@@ -56,20 +56,23 @@ export default function Intel() {
     setLoading(true)
     try {
       const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
-      const res = await fetch(`${API}/news/feed?filter=${filterLabel}`)
+      const res = await fetch(
+        `${API}/news/feed?filter=${encodeURIComponent(filterLabel)}`
+      )
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
 
       if (data.articles?.length) {
         setNews(data.articles.map(a => ({
-          source:      a.source?.toUpperCase().slice(0, 12) || 'NEWS',
+          source:      (a.source || 'NEWS').toUpperCase().slice(0, 12),
           time:        timeSince(a.publishedAt),
           publishedAt: a.publishedAt,
-          title:       a.title?.replace(/ - [^-]+$/, '') || '',
+          title:       a.title || '',
           body:        a.description || '',
-          url:         a.url,
-          image:       a.image,
+          url:         a.url || '#',
+          image:       a.image || null,
           sentiment:   getSentiment(a.title, a.description),
-          tickers:     getRelatedTickers(a.title + ' ' + (a.description || '')),
+          tickers:     getRelatedTickers((a.title || '') + ' ' + (a.description || '')),
         })))
         setNewCount(loading ? 0 : Math.floor(Math.random() * 3) + 1)
       } else {
