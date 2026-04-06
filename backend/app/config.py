@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from pydantic import model_validator
 from functools import lru_cache
 
 
@@ -27,16 +26,6 @@ class Settings(BaseSettings):
 
     email_api_key: str = ""
     email_from: str = "noreply@quantera.markets"
-
-    allowed_origins: list = []
-
-    @model_validator(mode="after")
-    def build_allowed_origins(self):
-        base = ["http://localhost:3000", "http://localhost:5173"]
-        if self.frontend_url not in base:
-            base.append(self.frontend_url)
-        self.allowed_origins = base
-        return self
 
     class Config:
         env_file = ".env"
