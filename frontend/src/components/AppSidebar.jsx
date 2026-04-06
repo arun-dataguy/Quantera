@@ -1,28 +1,39 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Logo from './Logo'
 
 const NAV = [
-  { label: 'Dashboard',     to: '/dashboard',       icon: '⊞' },
-  { label: 'Market Movers', to: '/market',           icon: '🔥' },
-  { label: 'Crypto',        to: '/crypto',           icon: '₿'  },
-  { label: 'Portfolio',     to: '/portfolio',        icon: '💼' },
-  { label: 'Intel Feed',    to: '/intel',            icon: '📰' },
-  { label: 'Pricing',       to: '/pricing',          icon: '💳' },
+  { label: 'Dashboard',     to: '/dashboard', icon: '⊞' },
+  { label: 'Market Movers', to: '/market',    icon: '🔥' },
+  { label: 'Crypto',        to: '/crypto',    icon: '₿'  },
+  { label: 'Portfolio',     to: '/portfolio', icon: '💼' },
+  { label: 'Intel Feed',    to: '/intel',     icon: '📰' },
+  { label: 'Pricing',       to: '/pricing',   icon: '💳' },
 ]
 
 export default function AppSidebar() {
   const { user, logout } = useAuth()
   const { pathname } = useLocation()
+  const [collapsed, setCollapsed] = useState(false)
 
   return (
-    <aside style={s.sidebar}>
+    <aside style={{ ...s.sidebar, width: collapsed ? 64 : 220 }}>
+
       {/* Logo */}
-      <div style={s.logoWrap}>
-        <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center' }}>
-          <Logo variant="white" height={28} />
-        </Link>
-        <span style={s.aiBadge}>AI</span>
+      <div style={{ ...s.logoWrap, justifyContent: collapsed ? 'center' : 'flex-start', padding: collapsed ? '0 0 28px' : '0 20px 28px' }}>
+        {collapsed ? (
+          <Link to="/dashboard" style={{ display: 'flex' }}>
+            <Logo variant="icon" height={28} />
+          </Link>
+        ) : (
+          <>
+            <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center' }}>
+              <Logo variant="white" height={28} />
+            </Link>
+            <span style={s.aiBadge}>AI</span>
+          </>
+        )}
       </div>
 
       {/* Nav links */}
@@ -33,54 +44,75 @@ export default function AppSidebar() {
             <Link
               key={item.to}
               to={item.to}
-              style={{ ...s.link, ...(active ? s.linkActive : {}) }}
+              title={collapsed ? item.label : undefined}
+              style={{
+                ...s.link,
+                ...(active ? s.linkActive : {}),
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                padding: collapsed ? '9px 0' : '9px 12px',
+              }}
             >
               <span style={s.icon}>{item.icon}</span>
-              {item.label}
+              {!collapsed && item.label}
             </Link>
           )
         })}
       </nav>
 
-      {/* Spacer */}
       <div style={{ flex: 1 }} />
 
-      {/* User + logout */}
-      <div style={s.bottom}>
-        {user && (
-          <div style={s.userRow}>
-            <div style={s.avatar}>{(user.full_name || user.email || 'U').charAt(0).toUpperCase()}</div>
-            <div style={s.userInfo}>
-              <p style={s.userName}>{user.full_name || 'Trader'}</p>
-              <p style={s.userPlan}>Beta — Full Access</p>
-            </div>
+      {/* User row */}
+      {!collapsed && user && (
+        <div style={s.userRow}>
+          <div style={s.avatar}>{(user.full_name || user.email || 'U').charAt(0).toUpperCase()}</div>
+          <div style={s.userInfo}>
+            <p style={s.userName}>{user.full_name || 'Trader'}</p>
+            <p style={s.userPlan}>Beta — Full Access</p>
           </div>
-        )}
-        <button style={s.logoutBtn} onClick={logout}>Sign out</button>
-      </div>
+        </div>
+      )}
+
+      {collapsed && user && (
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 8 }}>
+          <div style={s.avatar} title={user.full_name || user.email}>
+            {(user.full_name || user.email || 'U').charAt(0).toUpperCase()}
+          </div>
+        </div>
+      )}
+
+      {/* Collapse button */}
+      <button
+        style={{ ...s.collapseBtn, justifyContent: collapsed ? 'center' : 'flex-start' }}
+        onClick={() => setCollapsed(c => !c)}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        <span style={{ fontSize: 14, lineHeight: 1 }}>{collapsed ? '»' : '«'}</span>
+        {!collapsed && <span style={{ fontSize: 13 }}>Collapse</span>}
+      </button>
+
     </aside>
   )
 }
 
 const s = {
   sidebar: {
-    width: 220,
     minHeight: '100vh',
     background: '#161b2b',
     display: 'flex',
     flexDirection: 'column',
-    padding: '24px 0 20px',
+    padding: '24px 0 16px',
     flexShrink: 0,
     position: 'sticky',
     top: 0,
     height: '100vh',
     overflowY: 'auto',
+    overflowX: 'hidden',
+    transition: 'width 0.22s ease',
   },
   logoWrap: {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
-    padding: '0 20px 28px',
   },
   aiBadge: {
     fontSize: 9,
@@ -90,18 +122,18 @@ const s = {
     borderRadius: 4,
     padding: '2px 5px',
     letterSpacing: '0.06em',
+    flexShrink: 0,
   },
   nav: {
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
-    padding: '0 12px',
+    padding: '0 8px',
   },
   link: {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '9px 12px',
     borderRadius: 8,
     fontSize: 14,
     fontWeight: 500,
@@ -109,6 +141,8 @@ const s = {
     textDecoration: 'none',
     transition: 'background 0.15s, color 0.15s',
     fontFamily: 'Inter, sans-serif',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
   linkActive: {
     background: 'rgba(255,255,255,0.08)',
@@ -121,18 +155,12 @@ const s = {
     textAlign: 'center',
     flexShrink: 0,
   },
-  bottom: {
-    padding: '16px 12px 0',
-    borderTop: '1px solid rgba(255,255,255,0.06)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
   userRow: {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '0 4px',
+    padding: '12px 16px 8px',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
   },
   avatar: {
     width: 32,
@@ -158,16 +186,20 @@ const s = {
     textOverflow: 'ellipsis',
   },
   userPlan: { fontSize: 11, color: '#00b87c', margin: 0, fontWeight: 600 },
-  logoutBtn: {
+  collapseBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 10,
     width: '100%',
-    padding: '8px 12px',
+    padding: '10px 16px',
     background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 8,
+    border: 'none',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
     color: '#8892b0',
-    fontSize: 13,
     cursor: 'pointer',
     fontFamily: 'Inter, sans-serif',
-    textAlign: 'left',
+    marginTop: 4,
+    transition: 'color 0.15s',
+    whiteSpace: 'nowrap',
   },
 }
