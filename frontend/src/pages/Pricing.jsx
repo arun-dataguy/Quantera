@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from '../components/Logo'
 
 const PLANS = [
   {
@@ -50,7 +51,7 @@ export default function Pricing() {
       {/* ── Navbar ── */}
       <nav style={s.nav}>
         <div style={s.navLeft}>
-          <span style={s.navBrand}>Quantera</span>
+          <Logo height={30} />
           <div style={s.navLinks}>
             <Link to="/dashboard" style={s.navLink}>Dashboard</Link>
             <Link to="/crypto"    style={s.navLink}>Crypto</Link>

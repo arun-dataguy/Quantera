@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from '../components/Logo'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
 const SYMBOLS = ['AAPL', 'NVDA', 'META', 'MSFT', 'AMZN', 'GOOGL', 'TSLA', 'JPM']
@@ -127,12 +128,7 @@ export default function Dashboard() {
       {/* ── Navbar ── */}
       <nav style={s.nav}>
         <div style={s.navLeft}>
-          <div style={s.logoMark}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
-            </svg>
-          </div>
-          <span style={s.navLogo}>Quantera</span>
+          <Logo height={30} />
           <div style={s.navTabs}>
             <button style={{ ...s.navTab, ...(tab==='signals' ? s.navTabActive : {}) }} onClick={() => { setTab('signals'); setActiveMarket('stocks') }}>
               📈 Stocks

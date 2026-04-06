@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from '../components/Logo'
 
 
 const TRENDING = [
@@ -100,7 +101,7 @@ export default function Intel() {
       <nav style={s.topNav}>
         <div style={s.navInner}>
           <div style={s.navLeft}>
-            <span style={s.navBrand}>Quantera</span>
+            <Logo height={30} />
             <div style={s.navLinks}>
               {['Dashboard', 'Markets', 'Portfolio', 'Insights'].map(item => (
                 <Link key={item} to={item === 'Dashboard' ? '/dashboard' : '#'}

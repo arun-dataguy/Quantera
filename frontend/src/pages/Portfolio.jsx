@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from '../components/Logo'
 
 const STARTING_BALANCE = 10000
 
@@ -61,7 +62,7 @@ export default function Portfolio() {
     <div style={s.root}>
       {/* Sidebar nav */}
       <aside style={s.sidebar}>
-        <div style={s.brand}>Quantera</div>
+        <Logo iconOnly height={40} style={{ margin: '0 auto 0 16px' }} />
         <nav style={s.nav}>
           {[
             { label: 'Dashboard',  to: '/dashboard' },

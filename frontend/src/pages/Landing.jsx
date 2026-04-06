@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import Logo from '../components/Logo'
 
 const TICKERS = [
   { sym: 'AAPL', change: '+1.24%', pos: true },
@@ -30,7 +31,7 @@ export default function Landing() {
       {/* ── Navbar ── */}
       <nav style={s.nav}>
         <div style={s.navLeft}>
-          <span style={s.navBrand}>Quantera</span>
+          <Logo height={32} />
           <div style={s.navLinks}>
             <Link to="/dashboard" style={s.navLink}>Dashboard</Link>
             <Link to="/crypto"    style={s.navLink}>Crypto</Link>

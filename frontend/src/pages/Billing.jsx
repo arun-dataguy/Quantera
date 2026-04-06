@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import Logo from '../components/Logo'
 
 export default function Billing() {
   const { user, apiFetch } = useAuth()
@@ -46,12 +47,7 @@ export default function Billing() {
     <div style={s.page}>
       <nav style={s.nav}>
         <Link to="/dashboard" style={s.logo}>
-          <div style={s.logoMark}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
-            </svg>
-          </div>
-          <span style={s.logoText}>Quantera</span>
+          <Logo height={30} />
         </Link>
         <Link to="/dashboard" style={s.back}>← Back to Dashboard</Link>
       </nav>

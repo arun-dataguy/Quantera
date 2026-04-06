@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
+import Logo from '../components/Logo'
 
 const CRYPTO_DATA = [
   { name: 'Bitcoin',  ticker: 'BTC', price: '$64,281.05', signal: 'BUY',  conf: 88, confLabel: '88% Extreme',  sentiment: 74.2, sentDir: 'up',   change: '+3.42%', pos: true,  color: '#f7931a', icon: '₿' },
@@ -51,7 +52,7 @@ export default function Crypto() {
       {/* ── Top Navbar ── */}
       <nav style={s.topNav}>
         <div style={s.navLeft}>
-          <span style={s.navBrand}>Quantera</span>
+          <Logo height={30} />
           <div style={s.navLinks}>
             <Link to="/dashboard" style={s.navLink}>Dashboard</Link>
             <Link to="/crypto" style={{ ...s.navLink, ...s.navLinkActive }}>Crypto</Link>
