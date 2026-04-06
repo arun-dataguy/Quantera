@@ -15,6 +15,7 @@ import Market from './pages/Market'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import AuthCallback from './pages/AuthCallback'
+import AlpacaConnect from './pages/AlpacaConnect'
 
 export default function App() {
   return (
@@ -36,6 +37,9 @@ export default function App() {
           <Route path="/billing"   element={<ProtectedRoute><Billing /></ProtectedRoute>}/>
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>}/>
           <Route path="/market"    element={<ProtectedRoute><Market /></ProtectedRoute>}/>
+
+          {/* Broker connect */}
+          <Route path="/alpaca/connect" element={<ProtectedRoute><AlpacaConnect /></ProtectedRoute>} />
 
           {/* Legal */}
           <Route path="/terms"   element={<Terms />} />
