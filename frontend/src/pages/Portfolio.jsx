@@ -62,7 +62,7 @@ export default function Portfolio() {
     <div style={s.root}>
       {/* Sidebar nav */}
       <aside style={s.sidebar}>
-        <Logo iconOnly height={40} style={{ margin: '0 auto 0 16px' }} />
+        <Logo variant="white" height={32} style={{ padding: '0 16px 24px' }} />
         <nav style={s.nav}>
           {[
             { label: 'Dashboard',  to: '/dashboard' },
