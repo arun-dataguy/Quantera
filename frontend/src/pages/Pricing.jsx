@@ -20,7 +20,7 @@ const PLANS = [
       { text: 'Market sentiment analysis', included: true },
       { text: 'Daily market digest', included: true },
     ],
-    cta: 'Upgrade to Pro', ctaPath: null,
+    cta: 'Free during Beta', ctaPath: '/signup',
   },
   {
     id: 'premium', label: 'PREMIUM', price: '$25', period: '/month', featured: false,
@@ -30,7 +30,7 @@ const PLANS = [
       { text: 'Advanced API access', included: true },
       { text: 'Priority Support', included: true },
     ],
-    cta: 'Go Premium', ctaPath: null,
+    cta: 'Free during Beta', ctaPath: '/signup',
   },
 ]
 
@@ -40,17 +40,9 @@ export default function Pricing() {
   const [loading, setLoading] = useState(null)
 
   const handleCheckout = async (planId) => {
+    // Beta mode — all plans redirect to signup/dashboard (no Stripe)
     if (!user) { navigate('/signup'); return }
-    if (planId === 'free') { navigate('/dashboard'); return }
-    setLoading(planId)
-    try {
-      const data = await apiFetch('/stripe/checkout', {
-        method: 'POST',
-        body: JSON.stringify({ plan: planId }),
-      })
-      window.location.href = data.checkout_url
-    } catch (err) { alert(err.message) }
-    finally { setLoading(null) }
+    navigate('/dashboard')
   }
 
   return (
@@ -72,10 +64,16 @@ export default function Pricing() {
       </nav>
 
       <main style={s.main}>
+        {/* Beta banner */}
+        <div style={s.betaBanner}>
+          <span style={s.betaTag}>🎉 BETA LAUNCH</span>
+          <span style={s.betaText}>All features are <strong>completely free</strong> during our launch period. No credit card required. Enjoy full access while we grow.</span>
+        </div>
+
         {/* Hero */}
         <div style={s.heroSection}>
           <h1 style={s.heroTitle}>Simple, transparent pricing</h1>
-          <p style={s.heroSub}>Unlock professional-grade AI trading signals and market intelligence. No hidden fees. No complexity.</p>
+          <p style={s.heroSub}>All features are free during beta. Plans below show what will be available after launch — lock in early access now.</p>
         </div>
 
         {/* Pricing cards */}
@@ -177,6 +175,9 @@ const s = {
   loginBtn: { padding: '8px 16px', fontSize: 14, fontWeight: 500, color: '#424656', textDecoration: 'none' },
   getStartedBtn: { padding: '10px 20px', fontSize: 14, fontWeight: 600, color: 'white', textDecoration: 'none', borderRadius: 8, background: '#0050cb' },
   main: { maxWidth: 1200, margin: '0 auto', padding: '120px 32px 80px', flex: 1 },
+  betaBanner: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 20px', background: 'linear-gradient(135deg, #ecfdf5, #d1fae5)', border: '1px solid #6ee7b7', borderRadius: 12, marginBottom: 40 },
+  betaTag: { background: '#059669', color: 'white', fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 20, whiteSpace: 'nowrap', letterSpacing: '0.06em' },
+  betaText: { fontSize: 14, color: '#065f46', lineHeight: 1.5 },
   heroSection: { textAlign: 'center', marginBottom: 64 },
   heroTitle: { fontSize: 56, fontWeight: 900, color: '#161b2b', letterSpacing: '-0.04em', margin: '0 0 16px', lineHeight: 1.1 },
   heroSub: { fontSize: 18, color: '#424656', maxWidth: 560, margin: '0 auto', lineHeight: 1.7 },

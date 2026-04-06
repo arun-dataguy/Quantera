@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 from app.routers.auth import get_current_user
-from app.models.user import User, PlanTier
+from app.models.user import User
 from fastapi import HTTPException
 from datetime import datetime, timezone
 import asyncio
@@ -55,24 +55,16 @@ async def get_signals(
     market: str = Query("stocks", enum=["stocks", "crypto"]),
     current_user: User = Depends(get_current_user),
 ):
-    if market == "crypto" and current_user.plan not in [PlanTier.PREMIUM]:
-        raise HTTPException(status_code=403, detail="Crypto signals require Premium plan")
-
+    # Beta mode — all plans get full access
     now = datetime.now(timezone.utc).timestamp()
     if _cache[market] and _cache_time[market]:
         age = now - _cache_time[market]
         if age < CACHE_TTL:
-            signals = _cache[market]
-            if current_user.plan == PlanTier.FREE:
-                signals = signals[:5]
-            return {"signals": signals, "cached": True, "market": market}
+            return {"signals": _cache[market], "cached": True, "market": market}
 
     signals, is_mock = await fetch_signals_safe(market)
     _cache[market] = signals
     _cache_time[market] = now
-
-    if current_user.plan == PlanTier.FREE:
-        signals = signals[:5]
 
     return {
         "signals": signals,

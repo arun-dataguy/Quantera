@@ -69,7 +69,7 @@ export default function Crypto() {
         <aside style={s.sidebar}>
           <div style={s.sidebarTop}>
             <p style={s.sidebarTitle}>{user?.full_name || 'Quantera AI'}</p>
-            <p style={s.sidebarPlan}>{isPremium ? 'Premium Account' : isPro ? 'Pro Account' : 'Free Account'}</p>
+            <p style={s.sidebarPlan}>Beta — Full Access</p>
           </div>
 
           <nav style={s.sideNav}>
@@ -98,7 +98,7 @@ export default function Crypto() {
                 <div style={s.userAvatar}>{user.full_name?.charAt(0) || 'A'}</div>
                 <div>
                   <p style={s.userNameText}>{user.full_name || 'Trader'}</p>
-                  <p style={s.userPlanText}>{isPremium ? 'Premium Account' : isPro ? 'Pro Account' : 'Free Account'}</p>
+                  <p style={s.userPlanText}>Beta — Full Access</p>
                 </div>
               </div>
             )}
@@ -119,37 +119,8 @@ export default function Crypto() {
             </div>
           </div>
 
-          {/* ── Locked State (Free users) ── */}
-          {!isPremium && (
-            <div style={s.lockedSection}>
-              <div style={s.lockedInner}>
-                <div style={s.btcIcon}>₿</div>
-                <h2 style={s.lockedTitle}>Crypto Signals — Premium Only</h2>
-                <p style={s.lockedSub}>Access deep liquidity analysis, sentiment mapping, and strong signal triggers for the most volatile assets in the market.</p>
-
-                {/* Blurred preview */}
-                <div style={s.blurGrid}>
-                  {['BTC', 'ETH', 'SOL'].map(sym => (
-                    <div key={sym} style={s.blurCard}>
-                      <div style={{ ...s.blurContent, filter: 'blur(5px)', userSelect: 'none' }}>
-                        <div style={s.blurSym}>{sym}</div>
-                        <div style={{ background: '#006c461a', color: '#006c46', padding: '3px 8px', borderRadius: 6, fontSize: 10, fontWeight: 700 }}>BUY</div>
-                        <div style={{ fontSize: 10, color: '#424656' }}>●●●●●●●●</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <button style={s.unlockBtn} onClick={handleUpgrade} disabled={upgrading}>
-                  🔒 {upgrading ? 'Loading…' : 'Unlock Crypto — $25/mo'}
-                </button>
-                <p style={s.trialText}>CANCEL ANYTIME • 7-DAY FREE TRIAL INCLUDED</p>
-              </div>
-            </div>
-          )}
-
-          {/* ── Premium Signal Terminal ── */}
-          {isPremium && (
+          {/* Beta: Crypto open to all users */}
+          {true && (
             <div style={s.terminalSection}>
               <div style={s.terminalHeader}>
                 <h2 style={s.terminalTitle}>Premium Signal Terminal</h2>

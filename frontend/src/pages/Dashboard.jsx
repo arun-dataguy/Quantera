@@ -119,7 +119,7 @@ export default function Dashboard() {
     finally { setUpgrading(false) }
   }
 
-  const visible  = isPro ? signals : signals.slice(0, 5)
+  const visible  = signals  // Beta: show all signals to everyone
   const selected_sig = signals.find(s => s.symbol === selected)
 
   return (
@@ -186,11 +186,7 @@ export default function Dashboard() {
           <span style={{ ...s.statNum, fontSize: 13, color: '#00B87A' }}>● LIVE</span>
           <span style={s.statLabel}>UPDATES 30M</span>
         </div>
-        {!isPro && (
-          <button style={s.upgradeBarBtn} onClick={() => handleUpgrade('pro')} disabled={upgrading}>
-            {upgrading ? 'Loading…' : '⚡ Upgrade to Pro — $10/mo'}
-          </button>
-        )}
+        <div style={s.betaBadge}>🎉 Beta — All features free</div>
       </div>
 
       <div style={s.body}>
@@ -245,26 +241,8 @@ export default function Dashboard() {
 
         {/* ── CRYPTO TAB ── */}
         {tab === 'crypto' && (
-          !isPremium ? (
-            <div style={s.gateCard}>
-              <div style={s.gateIcon}>₿</div>
-              <h2 style={s.gateTitle}>Crypto Signals — Premium Only</h2>
-              <p style={s.gateSub}>Get AI-powered BUY/HOLD/SELL signals for BTC, ETH, SOL, BNB and more. Upgrade to Premium to unlock.</p>
-              <div style={s.cryptoPreview}>
-                {CRYPTO_MOCK.slice(0,4).map((c, i) => (
-                  <div key={i} style={s.cryptoPreviewCard}>
-                    <span style={s.cryptoSym}>{c.symbol}</span>
-                    <div style={{ filter: 'blur(4px)' }}><SignalBadge signal={c.signal}/></div>
-                    <span style={{ fontSize: 12, color: '#8A94A6', filter: 'blur(4px)' }}>{(c.confidence*100).toFixed(0)}%</span>
-                  </div>
-                ))}
-              </div>
-              <button style={s.gateBtn} onClick={() => handleUpgrade('premium')}>
-                Unlock Crypto — $25/mo
-              </button>
-              <p style={s.gateDisclaimer}>Not financial advice. Crypto trading involves significant risk.</p>
-            </div>
-          ) : (
+          <> {/* Beta: crypto open to everyone */}
+          {true && (
             <div style={s.signalsSection}>
               <div style={s.tableCard}>
                 <div style={s.tableTopBar}>
@@ -348,7 +326,8 @@ export default function Dashboard() {
                 <button style={s.fullChartBtn} onClick={() => setTab('chart')}>Open full chart →</button>
               </div>
             </div>
-          )
+          )}
+          </>
         )}
 
         {/* ── SIGNALS TAB ── */}
@@ -432,21 +411,6 @@ export default function Dashboard() {
                 </table>
               </div>
 
-              {!isPro && (
-                <div style={s.lockBanner}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: '#0A0F1E', marginBottom: 4 }}>
-                      🔒 {signals.length - 5} more signals locked
-                    </div>
-                    <div style={{ fontSize: 13, color: '#5A6478' }}>
-                      Upgrade to Pro to unlock all signals, live data, and email alerts
-                    </div>
-                  </div>
-                  <button style={s.lockBtn} onClick={() => handleUpgrade('pro')} disabled={upgrading}>
-                    {upgrading ? 'Loading…' : 'Upgrade to Pro — $10/mo'}
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Mini chart preview */}
@@ -496,7 +460,7 @@ const s = {
   statNum: { fontSize: 15, fontWeight: 600, color: '#0A0F1E' },
   statLabel: { fontSize: 10, color: '#8A94A6', fontWeight: 600, letterSpacing: '0.06em' },
   statDivider: { width: 1, height: 20, background: '#E4E8F0' },
-  upgradeBarBtn: { marginLeft: 'auto', padding: '6px 16px', borderRadius: 8, border: 'none', background: '#0066FF', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' },
+  betaBadge: { marginLeft: 'auto', padding: '4px 14px', borderRadius: 20, background: 'rgba(0,184,122,0.12)', color: '#00875a', fontSize: 11, fontWeight: 700, letterSpacing: '0.04em' },
   body: { padding: '20px 24px', maxWidth: 1600, margin: '0 auto' },
   // Chart tab
   chartSection: { display: 'flex', flexDirection: 'column', gap: 16 },
