@@ -168,9 +168,10 @@ export default function Landing() {
           <p style={s.footerCopy}>© 2024 Quantera AI. Editorial Precision in Trading.</p>
         </div>
         <div style={s.footerLinks}>
-          {['Privacy Policy', 'Terms of Service', 'API Docs', 'Support'].map(l => (
-            <Link key={l} to="/" style={s.footerLink}>{l}</Link>
-          ))}
+          <Link to="/privacy" style={s.footerLink}>Privacy Policy</Link>
+          <Link to="/terms"   style={s.footerLink}>Terms of Service</Link>
+          <Link to="/pricing" style={s.footerLink}>Pricing</Link>
+          <Link to="/signup"  style={s.footerLink}>Get Started</Link>
         </div>
       </footer>
 

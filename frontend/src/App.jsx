@@ -11,6 +11,8 @@ import Intel       from './pages/Intel'
 import Pricing     from './pages/Pricing'
 import Billing     from './pages/Billing'
 import Portfolio from './pages/Portfolio'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 import AuthCallback from './pages/AuthCallback'
 
 export default function App() {
@@ -32,6 +34,10 @@ export default function App() {
           <Route path="/intel"     element={<ProtectedRoute><Intel /></ProtectedRoute>}/>
           <Route path="/billing"   element={<ProtectedRoute><Billing /></ProtectedRoute>}/>
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>}/>
+
+          {/* Legal */}
+          <Route path="/terms"   element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
