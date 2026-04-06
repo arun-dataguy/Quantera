@@ -23,16 +23,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Quantera API", lifespan=lifespan)
 
-# CORS — allow all Vercel preview URLs + production
-ALLOWED_ORIGINS = [
+# CORS — reads from env var, falls back to safe defaults
+_default_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
     "https://quantera-ebon.vercel.app",
 ]
 
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url and frontend_url not in ALLOWED_ORIGINS:
-    ALLOWED_ORIGINS.append(frontend_url)
+_env_origins = [
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()
+]
+
+ALLOWED_ORIGINS = list(set(_default_origins + _env_origins))
 
 app.add_middleware(
     CORSMiddleware,
