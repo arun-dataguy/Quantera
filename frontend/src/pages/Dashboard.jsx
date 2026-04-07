@@ -5,8 +5,9 @@ import Logo from '../components/Logo'
 import TradingViewChart from '../components/TradingViewChart'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
-const SYMBOLS = ['AAPL', 'NVDA', 'META', 'MSFT', 'AMZN', 'GOOGL', 'TSLA', 'JPM']
+const CORE_SYMBOLS = ['AAPL', 'NVDA', 'META', 'MSFT', 'AMZN', 'GOOGL', 'TSLA', 'JPM']
 const CRYPTO  = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'AVAX']
+const PAGE_SIZE = 15
 
 const CRYPTO_TV = {
   BTC: 'BINANCE:BTCUSDT', ETH: 'BINANCE:ETHUSDT',
@@ -65,6 +66,9 @@ export default function Dashboard() {
   const [activeMarket, setActiveMarket] = useState('stocks') // 'stocks' | 'crypto'
   const [cryptoSignals, setCryptoSignals] = useState(CRYPTO_MOCK)
   const [paperTrading, setPaperTrading] = useState(null) // ticker being paper-traded
+  const [search, setSearch]             = useState('')
+  const [filterSignal, setFilterSignal] = useState('ALL') // 'ALL' | 'BUY' | 'HOLD' | 'SELL'
+  const [page, setPage]                 = useState(1)
 
   useEffect(() => {
     const fetchSignals = async () => {
@@ -122,7 +126,16 @@ export default function Dashboard() {
     finally { setUpgrading(false) }
   }
 
-  const visible  = signals  // Beta: show all signals to everyone
+  // Search + filter
+  const filtered = signals.filter(s => {
+    const matchSignal = filterSignal === 'ALL' || s.signal === filterSignal
+    const q = search.trim().toLowerCase()
+    const matchSearch = !q || s.symbol?.toLowerCase().includes(q) || s.name?.toLowerCase().includes(q)
+    return matchSignal && matchSearch
+  })
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage   = Math.min(page, totalPages)
+  const visible    = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
   const selected_sig = signals.find(s => s.symbol === selected)
 
   return (
@@ -194,14 +207,14 @@ export default function Dashboard() {
           <div style={s.chartSection}>
             {/* Symbol picker */}
             <div style={s.symbolBar}>
-              {SYMBOLS.map(sym => {
-                const sig = signals.find(s => s.symbol === sym)
+              {(signals.length ? signals : CORE_SYMBOLS.map(s => ({ symbol: s }))).slice(0, 20).map(sig => {
+                const sym = sig.symbol
                 return (
                   <button key={sym} onClick={() => setSelected(sym)}
                     style={{ ...s.symCard, borderColor: selected === sym ? '#0066FF' : '#E4E8F0', background: selected === sym ? '#F0F6FF' : 'white' }}>
                     <span style={s.symName}>{sym}</span>
-                    {sig && <SignalBadge signal={sig.signal}/>}
-                    {sig && <span style={{ fontSize: 12, color: '#5A6478' }}>{(sig.confidence*100).toFixed(0)}%</span>}
+                    {sig.signal && <SignalBadge signal={sig.signal}/>}
+                    {sig.confidence && <span style={{ fontSize: 12, color: '#5A6478' }}>{(sig.confidence*100).toFixed(0)}%</span>}
                   </button>
                 )
               })}
@@ -336,13 +349,19 @@ export default function Dashboard() {
                 <div style={s.tableTopLeft}>
                   <span style={s.liveDot}/>
                   <span style={s.tableTitle}>Live AI Signals</span>
-                  <span style={s.tableSub}>Powered by LSTM + LightGBM + NewsAPI sentiment</span>
+                  <span style={s.tableSub}>{signals.length} stocks · LSTM + LightGBM + Sentiment</span>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {SYMBOLS.map(sym => (
-                    <button key={sym} onClick={() => { setSelected(sym); setTab('chart') }}
-                      style={{ ...s.quickSym, background: selected === sym ? '#0066FF' : 'transparent', color: selected === sym ? 'white' : '#5A6478' }}>
-                      {sym}
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <input
+                    value={search}
+                    onChange={e => { setSearch(e.target.value); setPage(1) }}
+                    placeholder="Search symbol or name…"
+                    style={s.searchInput}
+                  />
+                  {['ALL','BUY','HOLD','SELL'].map(f => (
+                    <button key={f} onClick={() => { setFilterSignal(f); setPage(1) }}
+                      style={{ ...s.filterBtn, background: filterSignal === f ? (f === 'BUY' ? '#00B87A' : f === 'SELL' ? '#F23645' : f === 'HOLD' ? '#F5A623' : '#0066FF') : 'transparent', color: filterSignal === f ? 'white' : '#5A6478', borderColor: filterSignal === f ? 'transparent' : '#E4E8F0' }}>
+                      {f}
                     </button>
                   ))}
                 </div>
@@ -409,6 +428,21 @@ export default function Dashboard() {
                 </table>
               </div>
 
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={s.pagination}>
+                  <span style={{ fontSize: 12, color: '#8A94A6' }}>
+                    {filtered.length} results · page {safePage} of {totalPages}
+                  </span>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button style={s.pageBtn} disabled={safePage <= 1} onClick={() => setPage(p => p - 1)}>‹ Prev</button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                      <button key={p} style={{ ...s.pageBtn, background: p === safePage ? '#0066FF' : 'transparent', color: p === safePage ? 'white' : '#5A6478', borderColor: p === safePage ? '#0066FF' : '#E4E8F0' }} onClick={() => setPage(p)}>{p}</button>
+                    ))}
+                    <button style={s.pageBtn} disabled={safePage >= totalPages} onClick={() => setPage(p => p + 1)}>Next ›</button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Mini chart preview */}
@@ -472,6 +506,10 @@ const s = {
   tableTitle: { fontSize: 14, fontWeight: 600, color: '#0A0F1E' },
   tableSub: { fontSize: 12, color: '#8A94A6' },
   quickSym: { padding: '4px 10px', borderRadius: 6, border: '1px solid #E4E8F0', fontSize: 11, fontWeight: 600, cursor: 'pointer' },
+  searchInput: { padding: '6px 12px', borderRadius: 8, border: '1.5px solid #E4E8F0', fontSize: 13, fontFamily: 'DM Sans, sans-serif', outline: 'none', width: 200 },
+  filterBtn: { padding: '5px 12px', borderRadius: 6, border: '1px solid #E4E8F0', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.04em' },
+  pagination: { padding: '12px 20px', borderTop: '1px solid #F0F2F5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  pageBtn: { padding: '5px 10px', borderRadius: 6, border: '1px solid #E4E8F0', fontSize: 12, fontWeight: 500, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', background: 'transparent', color: '#5A6478' },
   table: { width: '100%', borderCollapse: 'collapse' },
   th: { padding: '10px 18px', fontSize: 11, fontWeight: 600, color: '#8A94A6', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'left', borderBottom: '1px solid #E4E8F0' },
   tr: { borderBottom: '1px solid #F0F2F5', cursor: 'pointer', transition: 'background 0.15s' },
