@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
+import TradingViewChart from '../components/TradingViewChart'
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
 const SYMBOLS = ['AAPL', 'NVDA', 'META', 'MSFT', 'AMZN', 'GOOGL', 'TSLA', 'JPM']
@@ -226,11 +227,11 @@ export default function Dashboard() {
                 </div>
                 <span style={{ fontSize: 12, color: '#8A94A6' }}>Powered by TradingView</span>
               </div>
-              <iframe
+              <TradingViewChart
                 key={selected}
-                src={`https://www.tradingview.com/widgetembed/?frameElementId=tv_${selected}&symbol=${CRYPTO_TV[selected] || `NASDAQ:${selected}`}&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&theme=light&style=1&timezone=exchange&withdateranges=1&showpopupbutton=1&studies=RSI%40tv-basicstudies%1FMACD%40tv-basicstudies&locale=en`}
-                style={{ width: '100%', height: '100%', border: 'none' }}
-                allowFullScreen
+                symbol={selected}
+                exchange={CRYPTO_TV[selected] ? CRYPTO_TV[selected].split(':')[0] : 'NASDAQ'}
+                height={480}
               />
             </div>
           </div>
@@ -314,11 +315,11 @@ export default function Dashboard() {
                     <SignalBadge signal={cryptoSignals.find(c => c.symbol === selected).signal}/>
                   )}
                 </div>
-                <iframe
+                <TradingViewChart
                   key={selected}
-                  src={`https://www.tradingview.com/widgetembed/?frameElementId=crypto_${selected}&symbol=${CRYPTO_TV[selected] || 'BINANCE:BTCUSDT'}&interval=D&hidesidetoolbar=1&theme=light&style=1&locale=en`}
-                  style={{ width: '100%', height: 320, border: 'none' }}
-                  allowFullScreen
+                  symbol={CRYPTO_TV[selected] ? CRYPTO_TV[selected].split(':')[1] : 'BTCUSDT'}
+                  exchange={CRYPTO_TV[selected] ? CRYPTO_TV[selected].split(':')[0] : 'BINANCE'}
+                  height={320}
                 />
                 <button style={s.fullChartBtn} onClick={() => setTab('chart')}>Open full chart →</button>
               </div>
@@ -421,12 +422,7 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
-              <iframe
-                key={selected}
-                src={`https://www.tradingview.com/widgetembed/?frameElementId=mini_${selected}&symbol=NASDAQ:${selected}&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&theme=light&style=1&timezone=exchange&withdateranges=0&showpopupbutton=0&locale=en`}
-                style={{ width: '100%', height: 320, border: 'none' }}
-                allowFullScreen
-              />
+              <TradingViewChart key={selected} symbol={selected} height={320} />
               <button style={s.fullChartBtn} onClick={() => setTab('chart')}>
                 Open full chart →
               </button>

@@ -195,20 +195,64 @@ async def get_movers():
     }
 
 
+STOCK_FALLBACK = [
+    {"symbol":"AAPL","name":"Apple Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"NVDA","name":"NVIDIA Corporation","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"MSFT","name":"Microsoft Corporation","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"GOOGL","name":"Alphabet Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"AMZN","name":"Amazon.com Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"META","name":"Meta Platforms Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"TSLA","name":"Tesla Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"JPM","name":"JPMorgan Chase & Co.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"BRK-B","name":"Berkshire Hathaway Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"V","name":"Visa Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"JNJ","name":"Johnson & Johnson","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"WMT","name":"Walmart Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"XOM","name":"Exxon Mobil Corporation","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"MA","name":"Mastercard Incorporated","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"UNH","name":"UnitedHealth Group Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"HD","name":"The Home Depot Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"PG","name":"Procter & Gamble Co.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"BAC","name":"Bank of America Corp.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"AVGO","name":"Broadcom Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"COST","name":"Costco Wholesale Corp.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"AMD","name":"Advanced Micro Devices","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"NFLX","name":"Netflix Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"CRM","name":"Salesforce Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"ORCL","name":"Oracle Corporation","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"INTC","name":"Intel Corporation","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"DIS","name":"The Walt Disney Company","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"PYPL","name":"PayPal Holdings Inc.","exchange":"NASDAQ","type":"EQUITY"},
+    {"symbol":"UBER","name":"Uber Technologies Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"SHOP","name":"Shopify Inc.","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"PLTR","name":"Palantir Technologies","exchange":"NYSE","type":"EQUITY"},
+    {"symbol":"BTC-USD","name":"Bitcoin USD","exchange":"CCC","type":"CRYPTOCURRENCY"},
+    {"symbol":"ETH-USD","name":"Ethereum USD","exchange":"CCC","type":"CRYPTOCURRENCY"},
+    {"symbol":"SOL-USD","name":"Solana USD","exchange":"CCC","type":"CRYPTOCURRENCY"},
+    {"symbol":"BNB-USD","name":"BNB USD","exchange":"CCC","type":"CRYPTOCURRENCY"},
+]
+
+def _fallback_search(q: str):
+    q = q.lower()
+    return [
+        {**s, "signal": KNOWN_SIGNALS.get(s["symbol"])}
+        for s in STOCK_FALLBACK
+        if q in s["symbol"].lower() or q in s["name"].lower()
+    ][:8]
+
 @router.get("/search")
 async def search_stocks(q: str = Query(..., min_length=1)):
-    """Search stocks by symbol or company name."""
-    url = (
-        f"https://query1.finance.yahoo.com/v1/finance/search"
-        f"?q={q}&quotesCount=8&newsCount=0&enableFuzzyQuery=false&lang=en-US"
-    )
+    """Search stocks by symbol or company name — Yahoo Finance with static fallback."""
     try:
-        async with httpx.AsyncClient(timeout=8, headers=HEADERS) as client:
+        url = (
+            f"https://query1.finance.yahoo.com/v1/finance/search"
+            f"?q={q}&quotesCount=8&newsCount=0&enableFuzzyQuery=true&lang=en-US"
+        )
+        async with httpx.AsyncClient(timeout=6, headers=HEADERS) as client:
             r = await client.get(url)
             r.raise_for_status()
-            data   = r.json()
-            quotes = data.get("quotes", [])
-            return [
+            quotes = r.json().get("quotes", [])
+            results = [
                 {
                     "symbol":   item.get("symbol", ""),
                     "name":     item.get("shortname", item.get("longname", "")),
@@ -219,5 +263,9 @@ async def search_stocks(q: str = Query(..., min_length=1)):
                 for item in quotes
                 if item.get("quoteType") in ("EQUITY", "ETF", "CRYPTOCURRENCY")
             ]
+            if results:
+                return results
     except Exception:
-        return []
+        pass
+    # Fallback: filter static list
+    return _fallback_search(q)
