@@ -44,7 +44,7 @@ function ConfBar({ value, signal }) {
   )
 }
 
-const MOCK = SYMBOLS.map((sym, i) => ({
+const MOCK = CORE_SYMBOLS.map((sym, i) => ({
   symbol: sym,
   signal: ['BUY','HOLD','BUY','HOLD','BUY','HOLD','HOLD','BUY'][i],
   confidence: [0.71,0.46,0.90,0.75,0.54,0.35,0.52,0.69][i],
