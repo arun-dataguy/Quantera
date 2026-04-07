@@ -106,7 +106,7 @@ export default function Market() {
                     onClick={() => {
                       setSearchQ('')
                       setResults([])
-                      navigate('/dashboard')
+                      navigate(`/stock/${r.symbol}`)
                     }}>
                     <div style={s.searchResultLeft}>
                       <span style={s.searchSym}>{r.symbol}</span>
@@ -261,7 +261,7 @@ function MoverTable({ rows, compact }) {
             <tr key={row.symbol} style={s.tr}>
               <td style={{ ...s.td, color: '#9ca3af', width: 32 }}>{i + 1}</td>
               <td style={s.td}>
-                <span style={s.symPill}>{row.symbol}</span>
+                <Link to={`/stock/${row.symbol}`} style={{ ...s.symPill, textDecoration: 'none' }}>{row.symbol}</Link>
               </td>
               {!compact && (
                 <td style={{ ...s.td, color: '#374151', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

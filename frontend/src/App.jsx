@@ -16,6 +16,7 @@ import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import AuthCallback from './pages/AuthCallback'
 import AlpacaConnect from './pages/AlpacaConnect'
+import StockDetail from './pages/StockDetail'
 
 export default function App() {
   return (
@@ -37,6 +38,9 @@ export default function App() {
           <Route path="/billing"   element={<ProtectedRoute><Billing /></ProtectedRoute>}/>
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>}/>
           <Route path="/market"    element={<ProtectedRoute><Market /></ProtectedRoute>}/>
+
+          {/* Stock detail */}
+          <Route path="/stock/:symbol" element={<ProtectedRoute><StockDetail /></ProtectedRoute>} />
 
           {/* Broker connect */}
           <Route path="/alpaca/connect" element={<ProtectedRoute><AlpacaConnect /></ProtectedRoute>} />

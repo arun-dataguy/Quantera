@@ -267,12 +267,12 @@ export default function Dashboard() {
                       {cryptoSignals.map((sig, i) => (
                         <tr key={i} style={{ ...s.tr, background: selected === sig.symbol ? '#F0F6FF' : 'white' }}>
                           <td style={s.td}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <Link to={`/stock/${sig.symbol}`} style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
                               <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#F7F9FC', border: '1px solid #E4E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#0066FF' }}>
                                 {sig.symbol.charAt(0)}
                               </div>
-                              <strong style={{ fontSize: 14, color: '#0A0F1E' }}>{sig.symbol}</strong>
-                            </div>
+                              <strong style={{ fontSize: 14, color: '#0050cb' }}>{sig.symbol}</strong>
+                            </Link>
                           </td>
                           <td style={s.td}><SignalBadge signal={sig.signal}/></td>
                           <td style={s.td}><ConfBar value={sig.confidence} signal={sig.signal}/></td>
@@ -366,7 +366,7 @@ export default function Dashboard() {
                     {visible.map((sig, i) => (
                       <tr key={i} style={{ ...s.tr, background: selected === sig.symbol ? '#F0F6FF' : 'white' }}>
                         <td style={s.td}>
-                          <span style={{ fontWeight: 700, fontSize: 14, color: '#0A0F1E' }}>{sig.symbol}</span>
+                          <Link to={`/stock/${sig.symbol}`} style={{ fontWeight: 700, fontSize: 14, color: '#0050cb', textDecoration: 'none' }}>{sig.symbol}</Link>
                         </td>
                         <td style={s.td}><SignalBadge signal={sig.signal}/></td>
                         <td style={s.td}><ConfBar value={sig.confidence} signal={sig.signal}/></td>

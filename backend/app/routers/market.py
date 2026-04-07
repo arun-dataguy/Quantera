@@ -269,3 +269,111 @@ async def search_stocks(q: str = Query(..., min_length=1)):
         pass
     # Fallback: filter static list
     return _fallback_search(q)
+
+
+# ── Stock detail cache ────────────────────────────────────────────────────────
+_stock_cache: dict = {}
+_stock_cache_time: dict = {}
+STOCK_CACHE_TTL = 300  # 5 minutes
+
+SIGNAL_CONFIDENCE = {
+    "AAPL": 0.71, "NVDA": 0.46, "META": 0.90, "MSFT": 0.75,
+    "AMZN": 0.54, "GOOGL": 0.35, "TSLA": 0.52, "JPM": 0.69,
+}
+SIGNAL_SENTIMENT = {
+    "AAPL": 0.167, "NVDA": 0.220, "META": 0.119, "MSFT": 0.606,
+    "AMZN": 0.527, "GOOGL": 0.718, "TSLA": 0.133, "JPM": 0.487,
+}
+
+def _fmt(v, suffix="", divisor=1, decimals=2):
+    """Format a number nicely."""
+    if v is None:
+        return "N/A"
+    v = v / divisor
+    if abs(v) >= 1e12:
+        return f"${v/1e12:.2f}T{suffix}"
+    if abs(v) >= 1e9:
+        return f"${v/1e9:.2f}B{suffix}"
+    if abs(v) >= 1e6:
+        return f"${v/1e6:.2f}M{suffix}"
+    return f"{v:,.{decimals}f}{suffix}"
+
+@router.get("/stock/{symbol}")
+async def get_stock_detail(symbol: str):
+    """Rich stock detail: price, metrics, AI signal, company info."""
+    symbol = symbol.upper()
+    now = __import__("time").time()
+
+    if symbol in _stock_cache and (now - _stock_cache_time.get(symbol, 0)) < STOCK_CACHE_TTL:
+        return _stock_cache[symbol]
+
+    # Yahoo Finance quoteSummary — modules: price + summaryDetail + financialData + assetProfile
+    url = (
+        f"https://query1.finance.yahoo.com/v10/finance/quoteSummary/{symbol}"
+        f"?modules=price,summaryDetail,financialData,defaultKeyStatistics,assetProfile"
+    )
+    try:
+        async with httpx.AsyncClient(timeout=10, headers=HEADERS) as client:
+            r = await client.get(url)
+            r.raise_for_status()
+            res = r.json().get("quoteSummary", {}).get("result", [{}])[0]
+    except Exception:
+        res = {}
+
+    price_data   = res.get("price", {})
+    summary      = res.get("summaryDetail", {})
+    fin          = res.get("financialData", {})
+    stats        = res.get("defaultKeyStatistics", {})
+    profile      = res.get("assetProfile", {})
+
+    def raw(d, k):
+        v = d.get(k)
+        if isinstance(v, dict):
+            return v.get("raw")
+        return v
+
+    current_price  = raw(price_data, "regularMarketPrice")
+    change         = raw(price_data, "regularMarketChange")
+    change_pct     = raw(price_data, "regularMarketChangePercent")
+    market_cap     = raw(price_data, "marketCap")
+    company_name   = price_data.get("longName") or price_data.get("shortName") or symbol
+    exchange       = price_data.get("exchangeName", "NASDAQ")
+    currency       = price_data.get("currency", "USD")
+
+    result = {
+        "symbol":        symbol,
+        "name":          company_name,
+        "exchange":      exchange,
+        "currency":      currency,
+        "price":         round(current_price, 2) if current_price else None,
+        "change":        round(change, 2) if change else None,
+        "change_pct":    round(change_pct * 100, 2) if change_pct else None,
+        # Key metrics
+        "market_cap":    _fmt(market_cap),
+        "market_cap_raw": market_cap,
+        "pe_ratio":      round(raw(summary, "trailingPE") or 0, 2) or None,
+        "forward_pe":    round(raw(summary, "forwardPE") or 0, 2) or None,
+        "eps":           round(raw(stats, "trailingEps") or 0, 2) or None,
+        "revenue":       _fmt(raw(fin, "totalRevenue")),
+        "profit_margin": f"{round((raw(fin, 'profitMargins') or 0) * 100, 1)}%" if raw(fin, "profitMargins") else "N/A",
+        "week_52_high":  round(raw(summary, "fiftyTwoWeekHigh") or 0, 2) or None,
+        "week_52_low":   round(raw(summary, "fiftyTwoWeekLow") or 0, 2) or None,
+        "volume":        raw(price_data, "regularMarketVolume"),
+        "avg_volume":    raw(summary, "averageVolume"),
+        "dividend_yield": f"{round((raw(summary, 'dividendYield') or 0) * 100, 2)}%" if raw(summary, "dividendYield") else "N/A",
+        "beta":          round(raw(summary, "beta") or 0, 2) or None,
+        # Company info
+        "sector":        profile.get("sector", ""),
+        "industry":      profile.get("industry", ""),
+        "description":   (profile.get("longBusinessSummary") or "")[:600],
+        "website":       profile.get("website", ""),
+        "employees":     profile.get("fullTimeEmployees"),
+        # AI signal
+        "ai_signal":     KNOWN_SIGNALS.get(symbol),
+        "ai_confidence": SIGNAL_CONFIDENCE.get(symbol),
+        "ai_sentiment":  SIGNAL_SENTIMENT.get(symbol),
+    }
+
+    _stock_cache[symbol] = result
+    _stock_cache_time[symbol] = now
+    return result
