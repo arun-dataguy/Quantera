@@ -1,0 +1,48 @@
+substitutions:
+  _REGION: us-central1
+  _SERVICE: quantera-api
+  _REPO: quantera-repo
+
+steps:
+  # 1. Build the Docker image
+  - name: gcr.io/cloud-builders/docker
+    dir: backend
+    args:
+      - build
+      - -t
+      - $_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE:$COMMIT_SHA
+      - -t
+      - $_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE:latest
+      - .
+
+  # 2. Push both tags to Artifact Registry
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - --all-tags
+      - $_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE
+
+  # 3. Deploy to Cloud Run
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - $_SERVICE
+      - --image=$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE:$COMMIT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --allow-unauthenticated
+      - --min-instances=0
+      - --max-instances=3
+      - --memory=512Mi
+      - --cpu=1
+      - --timeout=60
+      - --concurrency=80
+
+images:
+  - $_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE:$COMMIT_SHA
+  - $_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO/$_SERVICE:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
