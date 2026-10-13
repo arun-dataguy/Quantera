@@ -8,30 +8,31 @@ const PLANS = [
     id: 'free', label: 'FREE', price: '$0', period: '/month', featured: false,
     features: [
       { text: '5 signals per day', included: true },
-      { text: 'Basic signal only', included: true },
-      { text: 'No confidence scores', included: false },
+      { text: 'Basic BUY/HOLD/SELL signal', included: true },
+      { text: 'Confidence scores', included: false },
+      { text: 'Sentiment analysis', included: false },
     ],
-    cta: 'Start for free', ctaPath: '/signup',
+    cta: 'Start for free',
   },
   {
     id: 'pro', label: 'PRO', price: '$10', period: '/month', featured: true,
     features: [
-      { text: 'Unlimited signals', included: true },
-      { text: 'AI confidence scores', included: true },
-      { text: 'Market sentiment analysis', included: true },
-      { text: 'Daily market digest', included: true },
+      { text: 'Unlimited signals — all 58 stocks', included: true },
+      { text: 'Confidence scores', included: true },
+      { text: 'NewsAPI sentiment analysis', included: true },
+      { text: 'Paper trading + portfolio tracking', included: true },
     ],
-    cta: 'Free during Beta', ctaPath: '/signup',
+    cta: 'Subscribe — $10/mo',
   },
   {
     id: 'premium', label: 'PREMIUM', price: '$25', period: '/month', featured: false,
     features: [
       { text: 'Everything in Pro', included: true },
-      { text: 'Full Crypto signals', included: true },
-      { text: 'Advanced API access', included: true },
-      { text: 'Priority Support', included: true },
+      { text: 'Crypto signals (8 coins)', included: true },
+      { text: 'Backtest access', included: true },
+      { text: 'Priority support', included: true },
     ],
-    cta: 'Free during Beta', ctaPath: '/signup',
+    cta: 'Subscribe — $25/mo',
   },
 ]
 
@@ -41,9 +42,25 @@ export default function Pricing() {
   const [loading, setLoading] = useState(null)
 
   const handleCheckout = async (planId) => {
-    // Beta mode — all plans redirect to signup/dashboard (no Stripe)
+    if (planId === 'free') {
+      navigate(user ? '/dashboard' : '/signup')
+      return
+    }
     if (!user) { navigate('/signup'); return }
-    navigate('/dashboard')
+    if (user.plan === planId) { navigate('/billing'); return }
+
+    setLoading(planId)
+    try {
+      const data = await apiFetch('/stripe/checkout', {
+        method: 'POST',
+        body: JSON.stringify({ plan: planId }),
+      })
+      window.location.href = data.checkout_url
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (
@@ -68,13 +85,13 @@ export default function Pricing() {
         {/* Beta banner */}
         <div style={s.betaBanner}>
           <span style={s.betaTag}>🎉 BETA LAUNCH</span>
-          <span style={s.betaText}>All features are <strong>completely free</strong> during our launch period. No credit card required. Enjoy full access while we grow.</span>
+          <span style={s.betaText}>Founding member pricing — lock in Pro at <strong>$10/mo</strong> or Premium at <strong>$25/mo</strong> before prices increase. Cancel anytime.</span>
         </div>
 
         {/* Hero */}
         <div style={s.heroSection}>
           <h1 style={s.heroTitle}>Simple, transparent pricing</h1>
-          <p style={s.heroSub}>All features are free during beta. Plans below show what will be available after launch — lock in early access now.</p>
+          <p style={s.heroSub}>Simple, transparent pricing. Subscribe monthly, cancel anytime. Free tier always available.</p>
         </div>
 
         {/* Pricing cards */}

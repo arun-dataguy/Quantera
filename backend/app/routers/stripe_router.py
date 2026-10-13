@@ -61,7 +61,7 @@ async def create_checkout(
         payment_method_types=["card"],
         line_items=[{"price": price_id, "quantity": 1}],
         mode="subscription",
-        success_url=f"{settings.frontend_url}/billing/success?session_id={{CHECKOUT_SESSION_ID}}",
+        success_url=f"{settings.frontend_url}/billing?session_id={{CHECKOUT_SESSION_ID}}",
         cancel_url=f"{settings.frontend_url}/pricing",
         metadata={"user_id": str(user.id), "plan": body.plan},
         subscription_data={
