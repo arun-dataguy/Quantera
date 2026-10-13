@@ -255,30 +255,6 @@ const s = {
     display: 'flex', minHeight: '100vh', background: '#f8f9ff',
     fontFamily: 'Inter, sans-serif',
   },
-  sidebar: {
-    width: 220, background: '#161b2b', display: 'flex', flexDirection: 'column',
-    padding: '28px 0', flexShrink: 0, position: 'sticky', top: 0, height: '100vh',
-  },
-  brand: {
-    fontSize: 20, fontWeight: 800, color: 'white', letterSpacing: '-0.04em',
-    padding: '0 24px 32px',
-  },
-  nav: { display: 'flex', flexDirection: 'column', gap: 4, flex: 1 },
-  navLink: {
-    display: 'block', padding: '10px 24px', fontSize: 14, fontWeight: 500,
-    color: 'rgba(255,255,255,0.55)', textDecoration: 'none', borderRadius: '0 8px 8px 0',
-    marginRight: 8, transition: 'all 0.15s',
-  },
-  navLinkActive: {
-    color: 'white', background: 'rgba(0,80,203,0.3)', fontWeight: 600,
-    borderLeft: '3px solid #0050cb',
-  },
-  sidebarFooter: { padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)' },
-  userEmail: { fontSize: 11, color: 'rgba(255,255,255,0.4)', marginBottom: 6, wordBreak: 'break-all' },
-  planBadge: {
-    display: 'inline-block', padding: '2px 8px', borderRadius: 4,
-    background: 'rgba(0,80,203,0.3)', color: '#7cacff', fontSize: 10, fontWeight: 700,
-  },
   main: { flex: 1, padding: '40px 48px', overflowY: 'auto' },
   header: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',

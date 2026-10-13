@@ -8,8 +8,10 @@ const NAV = [
   { label: 'Market Movers', to: '/market',    icon: '🔥' },
   { label: 'Crypto',        to: '/crypto',    icon: '₿'  },
   { label: 'Portfolio',     to: '/portfolio', icon: '💼' },
+  { label: 'Backtest',      to: '/backtest',  icon: '📊' },
   { label: 'Intel Feed',    to: '/intel',     icon: '📰' },
   { label: 'Pricing',       to: '/pricing',   icon: '💳' },
+  { label: 'Billing',       to: '/billing',   icon: '🧾' },
 ]
 
 export default function AppSidebar() {
@@ -67,7 +69,12 @@ export default function AppSidebar() {
           <div style={s.avatar}>{(user.full_name || user.email || 'U').charAt(0).toUpperCase()}</div>
           <div style={s.userInfo}>
             <p style={s.userName}>{user.full_name || 'Trader'}</p>
-            <p style={s.userPlan}>Beta — Full Access</p>
+            <p style={{
+            ...s.userPlan,
+            color: user.plan === 'pro' ? '#0066FF' : user.plan === 'premium' ? '#D4870A' : '#00b87c',
+          }}>
+            {user.plan === 'free' || !user.plan ? 'Free Plan' : user.plan.toUpperCase()}
+          </p>
           </div>
         </div>
       )}
