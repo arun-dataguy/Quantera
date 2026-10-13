@@ -1,5 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
+
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8003/api'
 
 const TICKERS = [
   { sym: 'AAPL', change: '+1.24%', pos: true },
@@ -10,13 +13,6 @@ const TICKERS = [
   { sym: 'MSFT', change: '-0.12%', pos: false },
 ]
 
-const METRICS = [
-  { icon: '✓', num: '73%',   label: 'Signal Accuracy',   sub: 'Verified historical performance across all asset classes.' },
-  { icon: '◈', num: '40+',   label: 'Indicators',        sub: 'Aggregated technical and social sentiment markers.' },
-  { icon: '⊕', num: '3',     label: 'Markets',           sub: 'Specialized algorithms for Crypto, Forex, and Equities.' },
-  { icon: '↺', num: '30min', label: 'Refresh Rate',      sub: 'Low-latency data processing for high-frequency insights.' },
-]
-
 const SIGNALS = [
   { sym: 'AAPL', name: 'Apple Inc.',  sub: '3m ago • Technical + Sentiment', signal: 'BUY',  conf: 85, pos: true },
   { sym: 'TSLA', name: 'Tesla Inc.',  sub: '12m ago • Macro Trend',          signal: 'HOLD', conf: 40, pos: false },
@@ -24,7 +20,41 @@ const SIGNALS = [
 ]
 
 export default function Landing() {
-  const navigate = useNavigate()
+  const [accuracy, setAccuracy] = useState(null)
+
+  useEffect(() => {
+    fetch(`${API}/backtest/public-stats`)
+      .then(r => r.json())
+      .then(d => { if (d?.overall_accuracy_5d) setAccuracy(d.overall_accuracy_5d) })
+      .catch(() => {})
+  }, [])
+
+  const metrics = [
+    {
+      icon: '✓',
+      num: accuracy ? `${Math.round(accuracy * 100)}%` : '—',
+      label: 'Backtest Accuracy',
+      sub: 'Walk-forward tested on 1 year of price history. Run the backtest to populate.',
+    },
+    {
+      icon: '◈',
+      num: '3',
+      label: 'Technical Signals',
+      sub: 'RSI(14), MACD(12/26), and SMA(20) trend — plus NewsAPI sentiment for core stocks.',
+    },
+    {
+      icon: '⊕',
+      num: '66',
+      label: 'Assets Covered',
+      sub: '58 S&P 500 stocks and 8 major crypto pairs with live price data.',
+    },
+    {
+      icon: '↺',
+      num: '30min',
+      label: 'Refresh Cycle',
+      sub: 'Signals recalculate every 30 minutes from live market data.',
+    },
+  ]
 
   return (
     <div style={s.root}>
@@ -61,25 +91,25 @@ export default function Landing() {
         <div style={s.heroGrid}>
           {/* Left — text */}
           <div style={s.heroLeft}>
-            <div style={s.newBadge}>NEW: AI v2.0</div>
+            <div style={s.newBadge}>BETA · Free during launch</div>
             <h1 style={s.heroH1}>
               Data-driven trading{' '}
               <span style={s.heroAccent}>signals</span>{' '}
               for everyone
             </h1>
             <p style={s.heroPara}>
-              Empowering traders with real-time confidence scores and sentiment analysis. Our neural networks process millions of data points to deliver clarity in high-volatility markets.
+              BUY/HOLD/SELL signals on 58 stocks and 8 crypto pairs, powered by RSI, MACD, and SMA trend analysis with live news sentiment. Built for swing traders who want data — not noise.
             </p>
             <div style={s.heroCtas}>
               <Link to="/signup" style={s.ctaPrimary}>Start free</Link>
               <Link to="/pricing" style={s.ctaSecondary}>See how it works ◎</Link>
             </div>
             <div style={s.socialProof}>
-              <span style={s.asSeenOn}>AS SEEN ON</span>
+              <span style={s.asSeenOn}>DATA FROM</span>
               <div style={s.pressLogos}>
-                <span style={s.pressItem}>Forbes</span>
-                <span style={s.pressItem}>TechCrunch</span>
-                <span style={s.pressItem}>Wired</span>
+                <span style={s.pressItem}>yfinance</span>
+                <span style={s.pressItem}>NewsAPI</span>
+                <span style={s.pressItem}>TradingView</span>
               </div>
             </div>
           </div>
@@ -126,23 +156,19 @@ export default function Landing() {
                 ))}
               </div>
 
-              {/* Social proof footer */}
+              {/* Beta footer */}
               <div style={s.cardFooter}>
-                <div style={s.avatarRow}>
-                  {['JD', 'AL', '+12'].map((a, i) => (
-                    <div key={i} style={s.avatar}>{a}</div>
-                  ))}
-                </div>
-                <span style={s.joinedText}>Joined by 12,400+ pro traders today</span>
+                <div style={s.betaDot} />
+                <span style={s.joinedText}>Beta launch · All features free to use</span>
               </div>
             </div>
 
             {/* Floating glass card */}
             <div style={s.floatingCard}>
-              <div style={s.floatingIcon}>↑</div>
+              <div style={s.floatingIcon}>◎</div>
               <div>
-                <div style={s.floatingNum}>+24.3%</div>
-                <div style={s.floatingLabel}>AVERAGE WEEKLY YIELD</div>
+                <div style={s.floatingNum}>58 + 8</div>
+                <div style={s.floatingLabel}>STOCKS + CRYPTO COVERED</div>
               </div>
             </div>
           </div>
@@ -150,7 +176,7 @@ export default function Landing() {
 
         {/* ── Metrics grid ── */}
         <div style={s.metricsGrid}>
-          {METRICS.map((m, i) => (
+          {metrics.map((m, i) => (
             <div key={i} style={{ ...s.metricCard, borderLeft: i === 0 ? '4px solid #0050cb' : 'none' }}>
               <div style={s.metricIcon}>{m.icon}</div>
               <div style={s.metricNum}>{m.num}</div>
@@ -241,9 +267,8 @@ const s = {
   confBarBg: { width: 64, height: 6, background: '#dee1f7', borderRadius: 3, overflow: 'hidden' },
   confBarFill: { height: 6, borderRadius: 3 },
   sigBadge: { padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em' },
-  cardFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(194,198,216,0.15)' },
-  avatarRow: { display: 'flex' },
-  avatar: { width: 32, height: 32, borderRadius: '50%', border: '2px solid #faf8ff', background: '#dae1ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#161b2b', marginLeft: -8 },
+  cardFooter: { display: 'flex', alignItems: 'center', gap: 8, marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(194,198,216,0.15)' },
+  betaDot: { width: 8, height: 8, borderRadius: '50%', background: '#006c46', animation: 'pulse 2s infinite', flexShrink: 0 },
   joinedText: { fontSize: 10, color: '#424656', fontWeight: 500 },
   floatingCard: { position: 'absolute', bottom: -32, left: -40, background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)', padding: '16px 20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.4)', boxShadow: '0 8px 32px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: 12, zIndex: 2 },
   floatingIcon: { width: 40, height: 40, borderRadius: '50%', background: '#006c46', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: 'white', flexShrink: 0 },

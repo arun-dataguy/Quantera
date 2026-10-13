@@ -12,6 +12,20 @@ _cache_ts: dict = {}
 CACHE_TTL = 6 * 3600  # 6 hours — backtests are slow/expensive to rerun
 
 
+@router.get("/public-stats")
+async def backtest_public_stats():
+    """No-auth endpoint for the landing page. Returns cached accuracy — never triggers a new run."""
+    key = "summary:core:1y"
+    if key in _cache:
+        summary = _cache[key].get("summary", {})
+        return {
+            "overall_accuracy_5d": summary.get("overall_accuracy_5d"),
+            "total_actionable":    summary.get("total_actionable"),
+            "avg_buy_return_5d":   summary.get("avg_buy_return_5d"),
+        }
+    return {"overall_accuracy_5d": None}
+
+
 @router.get("/run")
 async def backtest_single(
     symbol: str = Query(..., description="Ticker e.g. AAPL"),
