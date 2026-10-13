@@ -42,7 +42,7 @@ export default function Signup() {
 
         <div style={s.titleBlock}>
           <h1 style={s.title}>Start trading smarter</h1>
-          <p style={s.subtitle}>Join 10k+ traders using Quantera AI signals.</p>
+          <p style={s.subtitle}>Free during beta. No credit card required.</p>
         </div>
 
         <button style={s.googleBtn} onClick={loginWithGoogle} type="button">

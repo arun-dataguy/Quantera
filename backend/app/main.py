@@ -10,9 +10,9 @@ async def lifespan(app: FastAPI):
         from app.database import engine, Base
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        print("✅ Database connected")
+        print("Database connected")
     except Exception as e:
-        print(f"⚠️ Database warning: {e}")
+        print(f"Database warning (no local DB): {type(e).__name__}")
     yield
     # Shutdown
     try:
