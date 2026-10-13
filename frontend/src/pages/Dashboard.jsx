@@ -160,6 +160,7 @@ export default function Dashboard() {
             <Link to="/pricing" style={s.navTab}>Pricing</Link>
             <Link to="/billing" style={s.navTab}>Billing</Link>
             <Link to="/portfolio" style={s.navTab}>Portfolio</Link>
+            <Link to="/backtest" style={s.navTab}>📊 Backtest</Link>
           </div>
         </div>
         <div style={s.navRight}>

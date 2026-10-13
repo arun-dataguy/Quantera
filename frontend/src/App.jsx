@@ -17,6 +17,7 @@ import Privacy from './pages/Privacy'
 import AuthCallback from './pages/AuthCallback'
 import AlpacaConnect from './pages/AlpacaConnect'
 import StockDetail from './pages/StockDetail'
+import Backtest from './pages/Backtest'
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
 
           {/* Stock detail */}
           <Route path="/stock/:symbol" element={<ProtectedRoute><StockDetail /></ProtectedRoute>} />
+          <Route path="/backtest"      element={<ProtectedRoute><Backtest /></ProtectedRoute>} />
 
           {/* Broker connect */}
           <Route path="/alpaca/connect" element={<ProtectedRoute><AlpacaConnect /></ProtectedRoute>} />
