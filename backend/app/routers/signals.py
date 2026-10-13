@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, Query
-from app.routers.auth import get_current_user
+from fastapi import APIRouter, Depends, HTTPException, Query
+from app.routers.auth import get_current_user, PLAN_RANK
 from app.models.user import User
-from fastapi import HTTPException
 from datetime import datetime, timezone
 import asyncio
 
@@ -95,25 +94,62 @@ async def fetch_signals_safe(market: str):
     return [{**s, "generated_at": ts} for s in mock], True
 
 
+def _user_plan(user: User) -> str:
+    return user.plan.value if user.plan else "free"
+
+
+def _mask_signal(s: dict) -> dict:
+    """Return a copy with gated fields hidden for free-tier users."""
+    return {**s, "confidence": None, "sentiment_score": None, "gated": True}
+
+
 @router.get("/latest")
 async def get_signals(
     market: str = Query("stocks", enum=["stocks", "crypto"]),
     current_user: User = Depends(get_current_user),
 ):
-    # Beta mode — all plans get full access
+    plan = _user_plan(current_user)
+    rank = PLAN_RANK.get(plan, 0)
+
+    if market == "crypto" and rank < PLAN_RANK["premium"]:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "error": "plan_required",
+                "required_plan": "premium",
+                "current_plan": plan,
+                "message": "Upgrade to Premium to access crypto signals.",
+            },
+        )
+
     now = datetime.now(timezone.utc).timestamp()
     if _cache[market] and _cache_time[market]:
         age = now - _cache_time[market]
         if age < CACHE_TTL:
-            return {"signals": _cache[market], "cached": True, "market": market}
+            signals = _cache[market]
+            return _build_response(signals, market, plan, rank, cached=True)
 
     signals, is_mock = await fetch_signals_safe(market)
     _cache[market] = signals
     _cache_time[market] = now
+    return _build_response(signals, market, plan, rank, cached=False, is_mock=is_mock)
 
+
+def _build_response(signals, market, plan, rank, *, cached, is_mock=False):
+    if market == "stocks" and rank < PLAN_RANK["pro"]:
+        core = [s for s in signals if s.get("is_core")][:5]
+        masked = [_mask_signal(s) for s in core]
+        return {
+            "signals": masked,
+            "cached": cached,
+            "market": market,
+            "total": len(masked),
+            "gated": True,
+            "required_plan": "pro",
+        }
     return {
         "signals": signals,
-        "cached": False,
+        "cached": cached,
         "is_mock": is_mock,
         "market": market,
         "total": len(signals),

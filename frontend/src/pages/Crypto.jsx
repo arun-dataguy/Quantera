@@ -1,7 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AppSidebar from '../components/AppSidebar'
+import UpgradeGate from '../components/UpgradeGate'
 
 const CRYPTO_DATA = [
   { name: 'Bitcoin',  ticker: 'BTC', price: '$64,281.05', signal: 'BUY',  conf: 88, confLabel: '88% Extreme',  sentiment: 74.2, sentDir: 'up',   change: '+3.42%', pos: true,  color: '#f7931a', icon: '₿' },
@@ -30,35 +31,39 @@ function SentimentIcon({ dir }) {
   return <span style={{ color: '#424656', fontSize: 14 }}>—</span>
 }
 
-export default function Crypto() {
-  const { user, isPremium, isPro, apiFetch } = useAuth()
-  const navigate  = useNavigate()
-  const [upgrading, setUpgrading] = useState(false)
+const COIN_META = {
+  BTC: { name: 'Bitcoin',  color: '#f7931a', icon: '₿' },
+  ETH: { name: 'Ethereum', color: '#627eea', icon: '◆' },
+  SOL: { name: 'Solana',   color: '#14f195', icon: '◎' },
+  BNB: { name: 'BNB',      color: '#f3ba2f', icon: '⬡' },
+  XRP: { name: 'XRP',      color: '#00aae4', icon: '✦' },
+  ADA: { name: 'Cardano',  color: '#0033ad', icon: '₳' },
+}
 
-  const handleUpgrade = async () => {
-    setUpgrading(true)
-    try {
-      const data = await apiFetch('/stripe/checkout', {
-        method: 'POST',
-        body: JSON.stringify({ plan: 'premium' }),
+export default function Crypto() {
+  const { apiFetch } = useAuth()
+  const [signals, setSignals] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [gated, setGated]     = useState(false)
+
+  useEffect(() => {
+    apiFetch('/signals/latest?market=crypto')
+      .then(data => setSignals(data.signals || []))
+      .catch(err => {
+        if (err.planGated) setGated(true)
       })
-      window.location.href = data.checkout_url
-    } catch (err) { alert(err.message) }
-    finally { setUpgrading(false) }
-  }
+      .finally(() => setLoading(false))
+  }, [apiFetch])
 
   return (
     <div style={s.root}>
       <AppSidebar />
       <div style={s.body}>
-
-        {/* ── Main Content ── */}
         <main style={s.main}>
-          {/* Header */}
           <div style={s.pageHeader}>
             <div>
               <h1 style={s.pageTitle}>Crypto Signals</h1>
-              <p style={s.pageSubtitle}>High-frequency AI analysis for the top digital assets. Our neural networks process global liquidity and sentiment in real-time.</p>
+              <p style={s.pageSubtitle}>AI analysis for the top digital assets — sentiment, momentum, and technical signals in real-time.</p>
             </div>
             <div style={s.liveMarketBadge}>
               <span style={s.liveDot}/>
@@ -66,62 +71,62 @@ export default function Crypto() {
             </div>
           </div>
 
-          {/* Beta: Crypto open to all users */}
-          {true && (
+          {loading && <p style={{ color: '#5A6478', fontSize: 14 }}>Loading signals…</p>}
+
+          {gated && <UpgradeGate requiredPlan="premium" feature="crypto signals" />}
+
+          {!loading && !gated && signals.length > 0 && (
             <div style={s.terminalSection}>
               <div style={s.terminalHeader}>
                 <h2 style={s.terminalTitle}>Premium Signal Terminal</h2>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={s.iconBtn}>⚡ Filter</button>
-                  <button style={s.iconBtn}>↓ Export</button>
-                </div>
               </div>
-
               <div style={{ overflowX: 'auto' }}>
                 <table style={s.table}>
                   <thead>
                     <tr style={s.thead}>
-                      {['ASSET', 'PRICE (USD)', 'SIGNAL', 'AI CONFIDENCE', 'SENTIMENT', '24H CHANGE', 'ACTION'].map(h => (
+                      {['ASSET', 'PRICE (USD)', 'SIGNAL', 'CONFIDENCE', 'SENTIMENT', '24H CHANGE'].map(h => (
                         <th key={h} style={s.th}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {CRYPTO_DATA.map((row, i) => (
-                      <tr key={i} style={s.tr}>
-                        <td style={s.td}>
-                          <div style={s.assetCell}>
-                            <div style={{ ...s.assetIcon, background: row.color + '1a', color: row.color }}>
-                              {row.icon}
+                    {signals.map((row) => {
+                      const meta = COIN_META[row.symbol] || { name: row.symbol, color: '#888', icon: '◉' }
+                      const pos  = (row.change_pct || 0) >= 0
+                      return (
+                        <tr key={row.symbol} style={s.tr}>
+                          <td style={s.td}>
+                            <div style={s.assetCell}>
+                              <div style={{ ...s.assetIcon, background: meta.color + '1a', color: meta.color }}>
+                                {meta.icon}
+                              </div>
+                              <div>
+                                <div style={s.assetName}>{meta.name}</div>
+                                <div style={s.assetTicker}>{row.symbol}</div>
+                              </div>
                             </div>
-                            <div>
-                              <div style={s.assetName}>{row.name}</div>
-                              <div style={s.assetTicker}>{row.ticker}</div>
+                          </td>
+                          <td style={{ ...s.td, fontFamily: 'monospace', fontWeight: 600 }}>
+                            ${row.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </td>
+                          <td style={s.td}><SignalBadge signal={row.signal}/></td>
+                          <td style={s.td}>
+                            <div style={s.confBar}>
+                              <div style={{ ...s.confBarFill, width: (row.confidence * 100) + '%' }}/>
                             </div>
-                          </div>
-                        </td>
-                        <td style={{ ...s.td, fontFamily: 'monospace', fontWeight: 600 }}>{row.price}</td>
-                        <td style={s.td}><SignalBadge signal={row.signal}/></td>
-                        <td style={s.td}>
-                          <div style={s.confBar}>
-                            <div style={{ ...s.confBarFill, width: row.conf + '%' }}/>
-                          </div>
-                          <div style={s.confLabel}>{row.confLabel}</div>
-                        </td>
-                        <td style={s.td}>
-                          <div style={s.sentRow}>
-                            <span style={{ fontSize: 13 }}>{row.sentiment}</span>
-                            <SentimentIcon dir={row.sentDir}/>
-                          </div>
-                        </td>
-                        <td style={{ ...s.td, fontWeight: 700, color: row.pos ? '#006c46' : '#ba1a1a' }}>
-                          {row.change}
-                        </td>
-                        <td style={s.td}>
-                          <button style={s.moreBtn}>⋮</button>
-                        </td>
-                      </tr>
-                    ))}
+                            <div style={s.confLabel}>{(row.confidence * 100).toFixed(0)}%</div>
+                          </td>
+                          <td style={s.td}>
+                            <span style={{ fontSize: 13 }}>
+                              {row.sentiment_score != null ? row.sentiment_score.toFixed(3) : '—'}
+                            </span>
+                          </td>
+                          <td style={{ ...s.td, fontWeight: 700, color: pos ? '#006c46' : '#ba1a1a' }}>
+                            {pos ? '+' : ''}{row.change_pct?.toFixed(2)}%
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>

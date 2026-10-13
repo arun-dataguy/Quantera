@@ -13,7 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User, VirtualPortfolio, VirtualPosition, VirtualTrade
-from app.routers.auth import get_current_user, get_db
+from app.routers.auth import get_current_user, get_db, require_plan
 
 router = APIRouter(tags=["Wallet"])
 
@@ -68,7 +68,7 @@ class TradeRequest(BaseModel):
 
 @router.get("/portfolio")
 async def get_portfolio(
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_plan("pro")),
     db: AsyncSession  = Depends(get_db),
 ):
     """Return virtual portfolio summary with live P&L."""
@@ -116,7 +116,7 @@ async def get_portfolio(
 
 @router.get("/trades")
 async def get_trades(
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_plan("pro")),
     db: AsyncSession  = Depends(get_db),
 ):
     """Return last 50 paper trades."""
@@ -147,7 +147,7 @@ async def get_trades(
 @router.post("/trade")
 async def execute_trade(
     body: TradeRequest,
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_plan("pro")),
     db: AsyncSession  = Depends(get_db),
 ):
     """
@@ -259,7 +259,7 @@ async def execute_trade(
 
 @router.post("/reset")
 async def reset_portfolio(
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_plan("pro")),
     db: AsyncSession  = Depends(get_db),
 ):
     """Reset portfolio back to $10,000 (wipes all positions and trades)."""

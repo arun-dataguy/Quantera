@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Logo from '../components/Logo'
+import UpgradeGate from '../components/UpgradeGate'
 
 const PERIODS = [
   { value: '3mo', label: '3 Mo' },
@@ -105,7 +106,8 @@ export default function Backtest() {
   const [loading,   setLoading]   = useState(false)
   const [data,      setData]      = useState(null)
   const [error,     setError]     = useState(null)
-  const [selected,  setSelected]  = useState(null)  // selected symbol for detail view
+  const [gated,     setGated]     = useState(false)
+  const [selected,  setSelected]  = useState(null)
   const [detailLoading, setDetailLoading] = useState(false)
   const [detail,    setDetail]    = useState(null)
 
@@ -118,13 +120,13 @@ export default function Backtest() {
     try {
       const res = await apiFetch(`/backtest/summary?period=${p}&market=core`)
       setData(res)
-      // Default-select the first successful symbol
       const first = Object.keys(res.by_symbol).find(k => !res.by_symbol[k].error)
       if (first) {
         setSelected(first)
         setDetail(res.by_symbol[first])
       }
     } catch (e) {
+      if (e.planGated) { setGated(true); return }
       setError(e.message)
     } finally {
       setLoading(false)
@@ -206,8 +208,11 @@ export default function Backtest() {
           </div>
         )}
 
+        {/* ── Plan gate ── */}
+        {gated && !loading && <UpgradeGate requiredPlan="premium" feature="the backtesting engine" />}
+
         {/* ── Error ── */}
-        {error && !loading && (
+        {error && !loading && !gated && (
           <div style={{ ...s.loadingCard, background: '#FFF5F5', border: '1px solid #FCA5A5' }}>
             <span style={{ fontSize: 20 }}>⚠</span>
             <div style={{ fontSize: 13, color: '#991B1B' }}>{error}</div>

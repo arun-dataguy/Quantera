@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AppSidebar from '../components/AppSidebar'
+import UpgradeGate from '../components/UpgradeGate'
 
 const STARTING_BALANCE = 10000
 
@@ -13,6 +14,7 @@ export default function Portfolio() {
   const [tradeLoading, setTradeLoading] = useState(null)
   const [resetting, setResetting] = useState(false)
   const [error, setError]         = useState(null)
+  const [gated, setGated]         = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
   const loadPortfolio = useCallback(async () => {
@@ -25,6 +27,7 @@ export default function Portfolio() {
       setTrades(tradeList)
       setError(null)
     } catch (e) {
+      if (e.planGated) { setGated(true); return }
       setError(e.message)
     } finally {
       setLoading(false)
@@ -89,6 +92,8 @@ export default function Portfolio() {
 
         {loading ? (
           <div style={s.loading}>Loading portfolio…</div>
+        ) : gated ? (
+          <UpgradeGate requiredPlan="pro" feature="paper trading" />
         ) : error ? (
           <div style={s.errorBox}>{error}</div>
         ) : portfolio ? (

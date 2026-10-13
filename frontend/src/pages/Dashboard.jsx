@@ -59,6 +59,7 @@ export default function Dashboard() {
   const isPremium = user?.plan === 'premium'
   const [signals, setSignals]         = useState([])
   const [loading, setLoading]         = useState(true)
+  const [gated, setGated]             = useState(false)
   const [stats, setStats]             = useState({ buy: 0, hold: 0, sell: 0, avgConf: 0 })
   const [selected, setSelected]       = useState('AAPL')
   const [upgrading, setUpgrading]     = useState(false)
@@ -76,12 +77,14 @@ export default function Dashboard() {
       try {
         const data = await apiFetch('/signals/latest?market=stocks')
         setSignals(data.signals || [])
+        if (data.gated) setGated(true)
+        const sigs = data.signals || []
         setStats({
-          buy:  data.signals.filter(s => s.signal === 'BUY').length,
-          hold: data.signals.filter(s => s.signal === 'HOLD').length,
-          sell: data.signals.filter(s => s.signal === 'SELL').length,
-          avgConf: data.signals.length
-            ? (data.signals.reduce((a, s) => a + s.confidence, 0) / data.signals.length * 100).toFixed(1)
+          buy:  sigs.filter(s => s.signal === 'BUY').length,
+          hold: sigs.filter(s => s.signal === 'HOLD').length,
+          sell: sigs.filter(s => s.signal === 'SELL').length,
+          avgConf: sigs.length && sigs[0].confidence != null
+            ? (sigs.reduce((a, s) => a + (s.confidence || 0), 0) / sigs.length * 100).toFixed(1)
             : 0,
         })
       } catch (err) {
@@ -198,7 +201,7 @@ export default function Dashboard() {
           <span style={{ ...s.statNum, fontSize: 13, color: '#00B87A' }}>● LIVE</span>
           <span style={s.statLabel}>UPDATES 30M</span>
         </div>
-        <div style={s.betaBadge}>🎉 Beta — All features free</div>
+        <div style={s.betaBadge}>{user?.plan === 'free' ? 'Free Plan' : user?.plan?.toUpperCase()}</div>
       </div>
 
       <div style={s.body}>
@@ -215,7 +218,7 @@ export default function Dashboard() {
                     style={{ ...s.symCard, borderColor: selected === sym ? '#0066FF' : '#E4E8F0', background: selected === sym ? '#F0F6FF' : 'white' }}>
                     <span style={s.symName}>{sym}</span>
                     {sig.signal && <SignalBadge signal={sig.signal}/>}
-                    {sig.confidence && <span style={{ fontSize: 12, color: '#5A6478' }}>{(sig.confidence*100).toFixed(0)}%</span>}
+                    {sig.confidence != null && <span style={{ fontSize: 12, color: '#5A6478' }}>{(sig.confidence*100).toFixed(0)}%</span>}
                   </button>
                 )
               })}
@@ -229,10 +232,14 @@ export default function Dashboard() {
                   {selected_sig && (
                     <>
                       <SignalBadge signal={selected_sig.signal}/>
-                      <span style={{ fontSize: 13, color: '#5A6478' }}>{(selected_sig.confidence*100).toFixed(1)}% confidence</span>
-                      <span style={{ fontSize: 13, color: selected_sig.sentiment_score >= 0 ? '#00B87A' : '#F23645' }}>
-                        Sentiment: {selected_sig.sentiment_score >= 0 ? '+' : ''}{selected_sig.sentiment_score?.toFixed(3)}
-                      </span>
+                      {selected_sig.confidence != null && (
+                        <span style={{ fontSize: 13, color: '#5A6478' }}>{(selected_sig.confidence*100).toFixed(1)}% confidence</span>
+                      )}
+                      {selected_sig.sentiment_score != null && (
+                        <span style={{ fontSize: 13, color: selected_sig.sentiment_score >= 0 ? '#00B87A' : '#F23645' }}>
+                          Sentiment: {selected_sig.sentiment_score >= 0 ? '+' : ''}{selected_sig.sentiment_score?.toFixed(3)}
+                        </span>
+                      )}
                       <span style={{ fontSize: 13, color: '#5A6478' }}>
                         ${selected_sig.price?.toFixed(2)}
                       </span>
@@ -345,6 +352,22 @@ export default function Dashboard() {
         {/* ── SIGNALS TAB ── */}
         {tab === 'signals' && (
           <div style={s.signalsSection}>
+            {/* Plan gate banner */}
+            {gated && (
+              <div style={{ background: 'linear-gradient(135deg, #f0f6ff 0%, #e8edff 100%)', border: '1.5px solid #c0d0f7', borderRadius: 12, padding: '16px 20px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <strong style={{ fontSize: 14, color: '#0D1B3E' }}>Showing 5 of 58 signals — Free plan</strong>
+                  <p style={{ margin: '2px 0 0', fontSize: 13, color: '#5A6478' }}>Confidence and sentiment data hidden. Upgrade to Pro for all 58 stocks with full data.</p>
+                </div>
+                <button
+                  onClick={() => handleUpgrade('pro')}
+                  disabled={upgrading}
+                  style={{ padding: '9px 20px', borderRadius: 8, border: 'none', background: '#0050cb', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}
+                >
+                  {upgrading ? 'Redirecting…' : 'Upgrade to Pro — $9.99/mo'}
+                </button>
+              </div>
+            )}
             <div style={s.tableCard}>
               <div style={s.tableTopBar}>
                 <div style={s.tableTopLeft}>
@@ -389,12 +412,14 @@ export default function Dashboard() {
                           <Link to={`/stock/${sig.symbol}`} style={{ fontWeight: 700, fontSize: 14, color: '#0050cb', textDecoration: 'none' }}>{sig.symbol}</Link>
                         </td>
                         <td style={s.td}><SignalBadge signal={sig.signal}/></td>
-                        <td style={s.td}><ConfBar value={sig.confidence} signal={sig.signal}/></td>
+                        <td style={s.td}>{sig.confidence != null ? <ConfBar value={sig.confidence} signal={sig.signal}/> : <span style={{ color: '#8A94A6', fontSize: 12 }}>—</span>}</td>
                         <td style={s.td}><span style={{ fontWeight: 500 }}>${sig.price?.toFixed(2)}</span></td>
                         <td style={s.td}>
-                          <span style={{ color: sig.sentiment_score >= 0 ? '#00B87A' : '#F23645', fontWeight: 500 }}>
-                            {sig.sentiment_score >= 0 ? '+' : ''}{sig.sentiment_score?.toFixed(3)}
-                          </span>
+                          {sig.sentiment_score != null ? (
+                            <span style={{ color: sig.sentiment_score >= 0 ? '#00B87A' : '#F23645', fontWeight: 500 }}>
+                              {sig.sentiment_score >= 0 ? '+' : ''}{sig.sentiment_score?.toFixed(3)}
+                            </span>
+                          ) : <span style={{ color: '#8A94A6', fontSize: 12 }}>—</span>}
                         </td>
                         <td style={s.td}>
                           <span style={{ color: sig.technical_score >= 0 ? '#00B87A' : '#F23645', fontWeight: 500 }}>
@@ -407,7 +432,9 @@ export default function Dashboard() {
                           </button>
                         </td>
                         <td style={s.td}>
-                          {sig.signal !== 'HOLD' ? (
+                          {!isPro ? (
+                            <span style={{ fontSize: 11, color: '#8A94A6' }}>Pro+</span>
+                          ) : sig.signal !== 'HOLD' ? (
                             <button
                               style={{
                                 ...s.paperBtn,

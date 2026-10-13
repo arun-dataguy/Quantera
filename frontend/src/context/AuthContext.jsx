@@ -36,7 +36,15 @@ export function AuthProvider({ children }) {
     }
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: 'Request failed' }))
-      throw new Error(err.detail || 'Request failed')
+      const detail = err.detail
+      if (res.status === 403 && typeof detail === 'object' && detail?.error === 'plan_required') {
+        const e = new Error(detail.message || 'Upgrade required')
+        e.planGated = true
+        e.requiredPlan = detail.required_plan
+        e.currentPlan = detail.current_plan
+        throw e
+      }
+      throw new Error(typeof detail === 'string' ? detail : (detail?.message || 'Request failed'))
     }
     return res.json()
   }, [])

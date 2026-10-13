@@ -117,6 +117,29 @@ async def get_current_user(
     return user
 
 
+# ── Plan gating helpers ───────────────────────────────────────────────────────
+
+PLAN_RANK = {"free": 0, "pro": 1, "premium": 2}
+
+def require_plan(min_plan: str):
+    """Dependency factory — raises 403 if user's plan is below min_plan."""
+    async def _check(user: User = Depends(get_current_user)):
+        user_rank = PLAN_RANK.get(user.plan.value if user.plan else "free", 0)
+        required_rank = PLAN_RANK.get(min_plan, 0)
+        if user_rank < required_rank:
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "error": "plan_required",
+                    "required_plan": min_plan,
+                    "current_plan": user.plan.value if user.plan else "free",
+                    "message": f"Upgrade to {min_plan.capitalize()} to access this feature.",
+                }
+            )
+        return user
+    return _check
+
+
 # ── Register ──────────────────────────────────────────────────────────────────
 
 @router.post("/register", status_code=201)

@@ -1,6 +1,6 @@
 import time
 from fastapi import APIRouter, Depends, Query
-from app.routers.auth import get_current_user
+from app.routers.auth import get_current_user, require_plan
 from app.models.user import User
 from app.services.backtest_engine import run_backtest_async, run_multi_backtest
 from app.services.signal_engine import CORE_STOCKS, EXTENDED_STOCKS
@@ -30,7 +30,7 @@ async def backtest_public_stats():
 async def backtest_single(
     symbol: str = Query(..., description="Ticker e.g. AAPL"),
     period: str = Query("1y", enum=["3mo", "6mo", "1y", "2y"]),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_plan("premium")),
 ):
     key = f"{symbol.upper()}:{period}"
     now = time.time()
@@ -49,7 +49,7 @@ async def backtest_single(
 async def backtest_summary(
     period: str = Query("1y", enum=["3mo", "6mo", "1y", "2y"]),
     market: str = Query("core", enum=["core", "extended"]),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_plan("premium")),
 ):
     symbols = CORE_STOCKS if market == "core" else CORE_STOCKS + EXTENDED_STOCKS[:10]
     key = f"summary:{market}:{period}"
