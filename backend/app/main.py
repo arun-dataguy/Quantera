@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
+# v1.3.0 — plan gating
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup — don't crash if DB fails
